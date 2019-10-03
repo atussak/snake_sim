@@ -1,0 +1,39 @@
+\documentclass[pdftex,11pt,a4paper,twoside]{book} 
+\usepackage[utf8]{inputenc}
+
+\title{\includegraphics[scale=1.25]{Figurer/ntnulogo.pdf}\\Specialization Project\\{\Large Title}}
+\author{Author}
+\date{}
+
+\input{Setup.tex}
+
+\begin{document}
+\maketitle
+
+%Introductory chapters
+\pagenumbering{roman}
+\pagestyle{headings}
+\input{Seksjoner/Abstract.tex}
+\input{Seksjoner/Preface.tex}
+    \tableofcontents
+    \clearpage
+    \listoffigures
+    \listoftables
+    \clearpage
+\pagenumbering{arabic} 				
+\setcounter{page}{1}
+
+%Body chapters
+\input{Seksjoner/Introduction.tex}
+\input{Seksjoner/Theory.tex}
+
+
+
+%Finalizing chapters
+\bibliographystyle{agsm}
+
+\bibliography{Bibliography.bib}
+\newpage
+\subfile{Seksjoner/Appendix.tex}
+
+\end{document}
