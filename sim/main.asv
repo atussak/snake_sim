@@ -18,22 +18,20 @@ q_dot_dot = zeros(N,1);
 
 tau_free       = zeros(N,1);
 %tau_free(1,1)  = 0.2;
+%tau(3,1)      = 0.1;
 tauc           = zeros(N,1);
 tau            = zeros(N,1);
-
-tau(3,1)      = 0.1;
 
 %% Main simulation loop
 for k = 1:Ns-1
   
-  %q(n+1) = -0.3;
-  %q(n+2) = 0.5;  
+  q(n+2) = 0.5;  
     
-%   if tauc == 0
-%     tau = tau_free;
-%   else
-%     tau = tauc;
-%   end
+  if tauc == 0
+    tau = tau_free;
+  else
+    tau = tauc;
+  end
   
   % Calculate dynamics matrices
   M = M_func(q');

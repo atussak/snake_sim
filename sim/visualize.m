@@ -1,4 +1,4 @@
-function visualize(pos)
+function visualize(pos, x0, y0)
 
     persistent p1 p2 p3
     global start obstacle_coords num_obstacles
@@ -34,7 +34,10 @@ function visualize(pos)
         c2 = pos(2,:)*0.3;
         c3 = pos(3,:)*0.3;
         
-        set(p1,'xdata',[0     c1(1)],'ydata',[0 c1(2)]);
+        x0 = x0*0.3;
+        y0 = y0*0.3;
+        
+        set(p1,'xdata',[x0     c1(1)],'ydata',[y0 c1(2)]);
         set(p2,'xdata',[c1(1) c2(1)],'ydata',[c1(2) c2(2)]);
         set(p3,'xdata',[c2(1) c3(1)],'ydata',[c2(2) c3(2)]);
         
