@@ -21,13 +21,15 @@ tau_free       = zeros(N,1);
 tauc           = zeros(N,1);
 tau            = zeros(N,1);
 
-tau(3,1)      = 0.1;
+%tau(3,1) = 0.002;
+tau(2,1) = 0.001;
+% tau(1,1) has to be zero at all times as this is only a virtual joint
 
 %% Main simulation loop
 for k = 1:Ns-1
   
-  %q(n+1) = -0.3;
-  %q(n+2) = 0.5;  
+%   q(n+1) = -0.3;
+%   q(n+2) = 0.5;  
     
 %   if tauc == 0
 %     tau = tau_free;
@@ -40,10 +42,16 @@ for k = 1:Ns-1
   C = C_func(q', q_dot');
   
   % Calculate joint acceleration
-  q_dot_dot = pinv(M)*(tau - C');
+  q_dot_dot = pinv(M)*(tau - C');   
+  
   % Euler integration
   q_dot     = q_dot + q_dot_dot*h;
   q         = q + q_dot*h;
+  
+  % Displacement of robot as a result of q moving both prev and prec link
+  q_diff = q_dot*h;
+  q(n+1) = q(n+1) + sum(sin(q_diff./2)); % x
+  q(n+2) = q(n+2) + sum(q(n+1)/tan(pi/2-q_diff/4)); % y
   
   % Links can't cross each other
   for i = 2:n
