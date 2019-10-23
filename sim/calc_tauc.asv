@@ -45,23 +45,18 @@ function tauc = calc_tauc(pos, q_sim, tau)
           %%
           %f = -1*[1; 2]; %?????????
           
-          Jc_ps_inv = Jc'/(Jc*Jc');
+          %Jc_ps_inv = Jc'/(Jc*Jc');
           %tauc = (eye(n) - Jc'*Jc_ps_inv')*tau
           
-          Jct = Jc'; % Transpose of Jc
-          Jct_ps_inv = Jct'*pinv(Jct*Jct'); % Pseudo inverse of transpose
-          
           % Force acting on obstacle
-          f_link = Jct_ps_inv*tau(1:n);
-          f_obs = -1*norm(f_link)*[-sin(q_sim(j)); cos(q_sim(j))];
+          f_obs = [-sin];
           
-          tauc = tauc + Jc'*f_obs; % Er dette lov???????
+          %tauc = tauc + Jc'*f % Er dette lov???????
           %%
         end
       end
     end
 
   end
-  
-  tauc = [tauc; 0; 0];
+  tauc = zeros(n, 1);
 end
