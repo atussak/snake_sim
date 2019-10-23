@@ -1,7 +1,0 @@
-% User defined specifications
-
-global n
-
-n = 3; % number of links
-
-%
