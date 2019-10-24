@@ -1,6 +1,6 @@
 function tauc = calc_tauc(pos, q_sim, tau)
 
-  global n num_obstacles obstacle_coords Jc_func
+  global n l num_obstacles obstacle_coords Jc_func
 
   tauc = zeros(n, 1);
 
@@ -18,7 +18,7 @@ function tauc = calc_tauc(pos, q_sim, tau)
         A = pos(j-1,:); % Last joint in pos of last link pos
       end
 
-      % Check if C is on AB
+      % Check if C (obstacle) is on AB
       AB = B - A;
       AC = C - A;
 
@@ -43,20 +43,33 @@ function tauc = calc_tauc(pos, q_sim, tau)
 
           % f må være negativ om hindringen ligger under!!
           %%
-          %f = -1*[1; 2]; %?????????
           
           %Jc_ps_inv = Jc'/(Jc*Jc');
-          %tauc = (eye(n) - Jc'*Jc_ps_inv')*tau
+          
+          Jct = Jc'; % Transpose of Jc
+          Jct_ps_inv = Jct'*pinv(Jct*Jct'); % Pseudo inverse of transpose
+          
+          % Coefficient corresponding to which side of the link the
+          % obstacle is lying
+          c = 1;
+          obs_xobs_y] = C(:);
+          [link_x, link_y] = A + (B-A)*l_to_obs/l; % point on link perp. to obstacle
+          if obs_x < link_x
+              c = -1;
+          end
           
           % Force acting on obstacle
-          f_obs = [-sin];
+          f_link = Jct_ps_inv*tau(1:n);
+          f_obs = c*norm(f_link)*[-sin(q_sim(j)); cos(q_sim(j))];
           
-          %tauc = tauc + Jc'*f % Er dette lov???????
+          % Torque from obstacle
+          tauc = tauc + Jc'*f_obs; % Er dette lov???????
           %%
         end
       end
     end
 
   end
-  tauc = zeros(n, 1);
+  
+  tauc = [tauc; 0; 0];
 end

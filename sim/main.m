@@ -16,13 +16,11 @@ q         = q0;
 q_dot     = zeros(N,1);
 q_dot_dot = zeros(N,1);
 
-tau_free       = zeros(N,1);
+tau_free       = zeros(N,1); % motor torque
 tau_free(2,1)  = 0.01;
-tauc           = zeros(N,1);
+tauc           = zeros(N,1); % torque from constraint
 tau            = zeros(N,1);
 
-%tau(3,1) = 0.002;
-%tau(2,1) = 0.01;
 % tau(1,1) has to be zero at all times as this is only a passive joint
 
 %% Main simulation loop
@@ -30,12 +28,8 @@ for k = 1:Ns-1
   
 %   q(n+1) = -0.3;
 %   q(n+2) = 0.5;  
-    
-  if tauc == 0
-    tau = tau_free;
-  else
-    tau = tauc;
-  end
+  
+  tau = tau_free + tauc;
   
   % Calculate dynamics matrices
   M = M_func(q');

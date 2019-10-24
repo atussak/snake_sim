@@ -1,12 +1,12 @@
 % User defined specifications
 
-global n q0
+global n l m q0
 
 n = 3; % number of links
 
-% link mass
+m = 1; % link mass
 
-% link length
+l = 1; % link length
 
 q0    = zeros(N,1); % initial joint positions
 q0(1) = pi/6;
