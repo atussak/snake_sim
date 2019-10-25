@@ -41,15 +41,15 @@ for i = 1:n
       for k = 1:j % For absolutte vinkler
          q_temp = q_temp + Q(k); 
       end
-%       X(i) = X(i) + l*cos(q_temp);
-%       Y(i) = Y(i) + l*sin(q_temp);
-      if j == i % To get to the center of mass (middle) of the link
-          X(i) = X(i) + (l/2)*cos(q_temp);
-          Y(i) = Y(i) + (l/2)*cos(q_temp);
-      else
-          X(i) = X(i) + l*cos(q_temp);
-          Y(i) = Y(i) + l*sin(q_temp);
-      end
+      X(i) = X(i) + l*cos(q_temp);
+      Y(i) = Y(i) + l*sin(q_temp);
+%       if j == i % To get to the center of mass (middle) of the link
+%           X(i) = X(i) + (l/2)*cos(q_temp);
+%           Y(i) = Y(i) + (l/2)*cos(q_temp);
+%       else
+%           X(i) = X(i) + l*cos(q_temp);
+%           Y(i) = Y(i) + l*sin(q_temp);
+%       end
    end
 end
 
@@ -58,7 +58,7 @@ end
 Xd = diff(X, t);
 Yd = diff(Y, t);
 
-for j = 1:N
+for j = 1:n
     Xd = subs(Xd, Qdiff(j), Qd(j));
     Yd = subs(Yd, Qdiff(j), Qd(j));
 end
@@ -69,8 +69,13 @@ K = sym('K', [1 n]);
 
 % Cartesian kinetic energy
 for i = 1:n
-   K(i) = 0.5*m*(Xd(i)^2 + Yd(i)^2) + 0.5*l/2*m*Qd(i)^2;
+   K(i) = 0.5*m*(Xd(i)^2 + Yd(i)^2);
 end
+
+% Rotational kinetic energy
+% for i = 2:n
+%    K(i) = K(i) + 0.5*l/2*m*Qd(i)^2;
+% end
 
 % Euler Lagrange
 

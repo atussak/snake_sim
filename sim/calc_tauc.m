@@ -47,7 +47,7 @@ function tauc = calc_tauc(pos, q_sim, tau)
           %Jc_ps_inv = Jc'/(Jc*Jc');
           
           Jct = Jc'; % Transpose of Jc
-          Jct_ps_inv = Jct'*pinv(Jct*Jct'); % Pseudo inverse of transpose
+          Jct_ps_inv = pinv(Jct); % Pseudo inverse of transpose
           
           % Coefficient corresponding to which side of the link the
           % obstacle is lying
@@ -58,12 +58,12 @@ function tauc = calc_tauc(pos, q_sim, tau)
           link_x = link_pos(1);
           link_y = link_pos(2);
           
-          if abs(link_x-obs_x) > abs(link_y-obs_y) % Decide based on left/right
+          if abs(link_x-obs_x) < abs(link_y-obs_y) % Decide based on left/right
               if obs_x > link_x
                   c = -1;
               end
           else % Decide based on over/under
-              if obs_y > link_y
+              if obs_y < link_y
                  c = -1; 
               end
           end
