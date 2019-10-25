@@ -41,7 +41,7 @@ function tauc = calc_tauc(pos, q_sim, tau)
 
           % Calculate torque from contact/collision
 
-          % f må være negativ om hindringen ligger under!!
+          % f maa vaere negativ om hindringen ligger under!!
           %%
           
           %Jc_ps_inv = Jc'/(Jc*Jc');
@@ -71,9 +71,7 @@ function tauc = calc_tauc(pos, q_sim, tau)
           % Force acting on obstacle
           f_link = Jct_ps_inv*tau(1:n);
           f_obs = c*norm(f_link)*[-sin(q_sim(j)); cos(q_sim(j))];
-          
-          j
-          
+                    
           % Torque from obstacle
           tauc = tauc + Jc'*f_obs; % Er dette lov???????
           %%

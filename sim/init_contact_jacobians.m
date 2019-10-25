@@ -1,11 +1,9 @@
-global q n lc Jc_func %JcT_func
+global q n lc l Jc_func %JcT_func
 
 % We can have n possible contact Jacobians
 % The distance from the joint to the contact point is generalized as lc
 
 syms lc
-
-l = 1; % link length
 
 all_Jc  = sym('Jc%d', [2 n n]);
 %all_JcT = sym('JcT%d', [n 2 n]);
@@ -16,8 +14,8 @@ Jc = sym('Jc%d', [2 n]);
 for i = 1:n
   
   % Calculate distances from base
-  x = sym(0);
-  y = sym(0);
+  x = q(n+1);
+  y = q(n+2);
   
   for j = 1:i
     q_temp = sym(0);
