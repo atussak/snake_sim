@@ -4,65 +4,71 @@ start = true;
 h       = 0.01;             % sample time (s)
 simTime = 100;              % simulation duration in seconds
 Ns      = simTime/h;        % number of samples
+t       = zeros(1, Ns);     % array of simulation time steps
+                            % (updated in loop)
 
-N = n + 2;
+N = n + 2; % number of all virtual and real links
 
 % Allocate memory
 M = zeros(N,N);
 C = zeros(N,1);
+q         = zeros(N,Ns);
+q_dot     = zeros(N,Ns);
+q_dot_dot = zeros(N,Ns);
 
 % Initial values
-q         = q0;
-q_dot     = zeros(N,1);
-q_dot_dot = zeros(N,1);
+q(:,1)    = q0;
 
-tau_free       = zeros(N,1); % motor torque
-tau_free(3,1)  = 0.01;
-tauc           = zeros(N,1); % torque from constraint
-tau            = zeros(N,1);
+tau_motor       = zeros(N,1); % motor torque
+tau_motor(2,1)  = 0.01;
+tau_motor(3,1)  = 0.01;
+tauc            = zeros(N,1); % torque from constraint
+tau             = zeros(N,1);
 
-% tau(1,1) has to be zero at all times as this is only a passive joint
 
 %% Main simulation loop
 for k = 1:Ns-1
+  t(k+1) = k*h;
   
-  tau = tau_free + tauc;
+  tau = tau_motor + tauc;
+  
+%   for i = 2:n
+%     % Links can't cross each other
+%     % Note: first link and virtual links aren't limited
+%     if q(i,k) > pi || q(i,k) < -pi
+%       q(i,k) = pi*sign(q(i,k));
+%       q_dot(i,k) = 0;
+%       q_dot_dot(i,k) = 0;
+%     end
+%   end
+   
   
   % Calculate dynamics matrices
-  M = M_func(q');
-  C = C_func(q', q_dot', q_dot_dot');   
+  M = M_func(q(:,k)');
+  C = C_func(q(:,k)', q_dot(:,k)', q_dot_dot(:,k)');   
   
   % Calculate joint acceleration
-  q_dot_dot = pinv(M)*(tau - C');   
+  q_dot_dot(:,k) = pinv(M)*(tau - C');
   
+  
+
   % Euler integration
-  q_dot     = q_dot + q_dot_dot*h;
-  q         = q + q_dot*h;
+  q_dot(:,k+1)     = q_dot(:,k) + q_dot_dot(:,k)*h;
+  q(:,k+1)         = q(:,k) + q_dot(:,k)*h;
+
   
-  % Displacement of robot as a result of q moving both prev and prec link
-%   q_diff = q_dot*h;
-%   q(n+1) = q(n+1) + sum(sin(q_diff./2)); % x
-%   q(n+2) = q(n+2) + sum(q(n+1)/tan(pi/2-q_diff/4)); % y
-  
-  % Links can't cross each other
-  for i = 2:n
-    if q(i) > pi || q(i) < -pi
-      q(i) = pi*sign(q(i))*1;%0.99;
-      q_dot(i) = 0;
-      q_dot_dot(i) = 0;
-    end
-  end
   
   % Calculate link coordinates
-  pos = kinematics(q);
+  pos = kinematics(q(:,k));
   
   % Calculate torque from contact
-  tauc = calc_tauc(pos, q, tau_free);
+  tauc = calc_tauc(pos, q(:,k), tau_motor);
   tauc = zeros(N,1);
   
-  x0 = q(n+1);
-  y0 = q(n+2);
+  x0 = q(n+1,k);
+  y0 = q(n+2,k);
   
   % Visualize robot
   visualize(pos, x0, y0);
+  
 end

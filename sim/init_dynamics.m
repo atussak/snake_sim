@@ -41,8 +41,6 @@ for i = 1:n
       for k = 1:j % For absolutte vinkler
          q_temp = q_temp + Q(k); 
       end
-%       X(i) = X(i) + l*cos(q_temp);
-%       Y(i) = Y(i) + l*sin(q_temp);
       if j == i % To get to the center of mass (middle) of the link
           X(i) = X(i) + (l/2)*cos(q_temp);
           Y(i) = Y(i) + (l/2)*cos(q_temp);
