@@ -29,14 +29,13 @@ for i = 1:n
     end
   end
   
-  % Differentiate wrt. the generalized coordinates (q)
+  % Differentiate wrt. the generalized coordinates
   for j = 1:n
     Jc(1,j) = diff(x, q(j));
     Jc(2,j) = diff(y, q(j));
   end
   
   all_Jc(:,:,i)  = simplify(Jc);
-  %all_JcT(:,:,i) = (simplify(Jc))';
 end
 
 Jc_func = matlabFunction(all_Jc, 'vars', {q, lc});
