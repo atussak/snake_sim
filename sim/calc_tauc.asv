@@ -38,7 +38,10 @@ function tauc = calc_tauc(pos, q_sim, tau)
           % Jacobian
           all_Jc = Jc_func(q_sim', l_to_obs);
           Jc = all_Jc(:,:,j);
-          Jct_ps_inv = pinv(Jc'); % Pseudo inverse of transpose
+
+          % Calculate torque from contact/collision       
+          Jct = Jc'; % Transpose of Jc
+          Jct_ps_inv = pinv(Jct); % Pseudo inverse of transpose
           
           % Coefficient corresponding to which side of the link the
           % obstacle is lying
