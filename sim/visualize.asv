@@ -42,7 +42,6 @@ function visualize(pos, x0, y0)
         set(p1,'xdata',[x0     c1(1)],'ydata',[y0 c1(2)]);
         set(p2,'xdata',[c1(1) c2(1)],'ydata',[c1(2) c2(2)]);
         set(p3,'xdata',[c2(1) c3(1)],'ydata',[c2(2) c3(2)]);
-        set(p4,'xdata',[c3(1) c4(1)],'ydata',[c3(2) c4(2)]);
         
         drawnow;
     end

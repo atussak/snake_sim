@@ -6,8 +6,6 @@ global q n lc l Jc_func %JcT_func
 syms lc
 
 all_Jc  = sym('Jc%d', [2 n n]);
-%all_JcT = sym('JcT%d', [n 2 n]);
-
 Jc = sym('Jc%d', [2 n]);
 
 

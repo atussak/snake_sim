@@ -20,8 +20,8 @@ q_dot_dot = zeros(N,Ns);
 q(:,1)    = q0;
 
 tau_motor       = zeros(N,1); % motor torque
-tau_motor(2,1)  = 0.01;
-tau_motor(3,1)  = 0.01;
+%tau_motor(2,1)  = 0.01;
+tau_motor(4,1)  = 0.01;
 tauc            = zeros(N,1); % torque from constraint
 tau             = zeros(N,1);
 
@@ -32,15 +32,15 @@ for k = 1:Ns-1
   
   tau = tau_motor + tauc;
   
-%   for i = 2:n
-%     % Links can't cross each other
-%     % Note: first link and virtual links aren't limited
-%     if q(i,k) > pi || q(i,k) < -pi
-%       q(i,k) = pi*sign(q(i,k));
-%       q_dot(i,k) = 0;
-%       q_dot_dot(i,k) = 0;
-%     end
-%   end
+  for i = 2:n
+    % Links can't cross each other
+    % Note: first link and virtual links aren't limited
+    if q(i,k) > pi || q(i,k) < -pi
+      q(i,k) = pi*sign(q(i,k));
+      q_dot(i,k) = 0;
+      q_dot_dot(i,k) = 0;
+    end
+  end
    
   
   % Calculate dynamics matrices
