@@ -2,7 +2,7 @@ global n q0 start
 start = true;
 
 h       = 0.01;             % sample time (s)
-simTime = 100;              % simulation duration in seconds
+simTime = 20;              % simulation duration in seconds
 Ns      = simTime/h;        % number of samples
 t       = zeros(1, Ns);     % array of simulation time steps
                             % (updated in loop)
@@ -15,13 +15,13 @@ C = zeros(N,1);
 q         = zeros(N,Ns);
 q_dot     = zeros(N,Ns);
 q_dot_dot = zeros(N,Ns);
+head_pos = zeros(2,Ns);
 
 % Initial values
 q(:,1)    = q0;
 
 tau_motor       = zeros(N,1); % motor torque
-tau_motor(2,1)  = -0.01;
-%tau_motor(4,1)  = 0.01;
+tau_motor(3,1)  = -0.01;
 tauc            = zeros(N,1); % torque from constraint
 tau             = zeros(N,1);
 
@@ -55,7 +55,8 @@ for k = 1:Ns-1
   
   % Calculate link coordinates
   pos = kinematics(q(:,k));
-  
+  head_pos(:,k) = pos(n,:)';
+
   % Calculate torque from contact
   tauc = calc_tauc(pos, q(:,k), tau_motor);
   %tauc = zeros(N,1);
@@ -65,5 +66,12 @@ for k = 1:Ns-1
   
   % Visualize robot
   visualize(pos, x0, y0);
-  
 end
+
+
+plot_robot_data(q, q_dot, q_dot_dot, head_pos, t);
+
+
+
+
+
