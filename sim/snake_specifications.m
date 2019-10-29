@@ -2,7 +2,7 @@
 
 global n l m q0
 
-n = 4; % number of links
+n = 3; % number of links
 
 m = 1; % link mass
 
