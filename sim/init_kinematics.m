@@ -1,6 +1,6 @@
 %% Transformation matrix
 
-global T_func q n
+global T_func q n l
 all_T = sym('T%d', [4 4 n]);
 
 T      = eye(4);
