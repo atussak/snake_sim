@@ -2,7 +2,7 @@ global n q0 start
 start = true;
 
 h       = 0.01;             % sample time (s)
-simTime = 40;              % simulation duration in seconds
+simTime = 60;              % simulation duration in seconds
 Ns      = simTime/h;        % number of samples
 t       = zeros(1, Ns);     % array of simulation time steps
                             % (updated in loop)
@@ -16,21 +16,20 @@ q         = zeros(N,Ns);
 q_dot     = zeros(N,Ns);
 q_dot_dot = zeros(N,Ns);
 head_pos = zeros(2,Ns);
+tau_motor       = zeros(N,1); % motor torque
+tauc            = zeros(N,Ns); % torque from constraint
+tau             = zeros(N,1);
 
 % Initial values
 q(:,1)    = q0;
-
-tau_motor       = zeros(N,1); % motor torque
 tau_motor(3,1)  = -0.01;
-tauc            = zeros(N,1); % torque from constraint
-tau             = zeros(N,1);
 
 
 %% Main simulation loop
 for k = 1:Ns-1
   t(k+1) = k*h;
   
-  tau = tau_motor + tauc;
+  tau = tau_motor + tauc(:,k)
   
   for i = 2:n
     % Links can't cross each other
@@ -40,6 +39,7 @@ for k = 1:Ns-1
       q_dot(i,k) = 0;
       q_dot_dot(i,k) = 0;
     end
+    
   end 
   
   % Calculate dynamics matrices
@@ -47,7 +47,7 @@ for k = 1:Ns-1
   C = C_func(q(:,k)', q_dot(:,k)', q_dot_dot(:,k)');   
   
   % Calculate joint acceleration
-  q_dot_dot(:,k) = pinv(M)*(tau - C');
+  q_dot_dot(:,k) = M\(tau - C');
   
   % Euler integration
   q_dot(:,k+1)     = q_dot(:,k) + q_dot_dot(:,k)*h;
@@ -58,7 +58,7 @@ for k = 1:Ns-1
   head_pos(:,k) = pos(n,:)';
 
   % Calculate torque from contact
-  tauc = calc_tauc(pos, q(:,k), tau_motor);
+  tauc(:,k+1) = calc_tauc(pos, q(:,k), tau, q_dot(:,k), q_dot(:,k+1), h);
   %tauc = zeros(N,1);
   
   x0 = q(n+1,k);
@@ -68,8 +68,7 @@ for k = 1:Ns-1
   visualize(pos, x0, y0);
 end
 
-
-plot_robot_data(q, q_dot, q_dot_dot, head_pos, t);
+plot_robot_data(q, q_dot, q_dot_dot, head_pos, tauc, t);
 
 
 

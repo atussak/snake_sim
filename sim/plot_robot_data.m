@@ -1,14 +1,28 @@
-function plot_robot_data(q, q_dot, q_dot_dot, pos, t)
+function plot_robot_data(q, q_dot, q_dot_dot, pos, tauc, t)
 
     global n
     
-    plot_q   = false;
-    plot_qd  = false;
-    plot_qdd = false;
+    plot_q    = false;
+    plot_qd   = false;
+    plot_qdd  = false;
+    plot_pos  = false;
+    plot_tauc = true;
     
     q_legends   = '';
     qd_legends  = '';
     qdd_legends = '';
+    tau_legends = '';
+    
+    % End effector position
+    if plot_pos
+        figure
+        grid on
+        pos(:,end) = [];
+        plot(pos(1,:), pos(2,:))
+        title('Head position')
+        xlabel('x')
+        ylabel('y')
+    end
     
     % Joint angles
     if plot_q
@@ -23,15 +37,6 @@ function plot_robot_data(q, q_dot, q_dot_dot, pos, t)
         legend(q_legends)
         title('Joint angles')
     end
-    
-    % End effector position
-    figure
-    grid on
-    pos(:,end) = [];
-    plot(pos(1,:), pos(2,:))
-    title('Head position')
-    xlabel('x')
-    ylabel('y')
     
     % Joint velocities
     if plot_qd
@@ -60,6 +65,19 @@ function plot_robot_data(q, q_dot, q_dot_dot, pos, t)
         title('Joint accelerations')
     end
 
+    % Constraint torque
+    if plot_tauc
+        figure
+        hold on
+        grid on
+        for i = 1:n+2
+            plot(t, tauc(i,:));
+            legend_name = strcat('tauc', int2str(i));
+            tau_legends = [tau_legends; legend_name];
+        end
+        legend(tau_legends)
+        title('Torque from constraint')
+    end    
 
 
 
