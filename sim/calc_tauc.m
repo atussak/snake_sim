@@ -44,37 +44,45 @@ function tauc = calc_tauc(pos, q_sim, tau)
           
           % Coefficient corresponding to which side of the link the
           % obstacle is lying
-          c = 1;
-          obs_x = C(1);
-          obs_y = C(2);
-          link_pos = A + (B-A)*l_to_obs/l; % point on link perp. to obstacle
-          link_x = link_pos(1);
-          link_y = link_pos(2);
-          
-          %if abs(link_x-obs_x) < abs(link_y-obs_y) % Decide based on left/right
-              if obs_x < link_x
-                  "Obstacle left"
-                  c = -1;
-              end
+%           c = 1;
+%           obs_x = C(1);
+%           obs_y = C(2);
+%           link_pos = A + (B-A)*l_to_obs/l; % point on link perp. to obstacle
+%           link_x = link_pos(1);
+%           link_y = link_pos(2);
+%           
+%           if abs(link_x-obs_x) < abs(link_y-obs_y) % Decide based on left/right
+%               if obs_x < link_x
+%                   "Obstacle left"
+%                   c = -1;
+%               end
 %           else % Decide based on over/under
 %               if obs_y < link_y
 %                  "Obstacle under" 
 %                  c = -1; 
 %               end
 %           end
-           
+          
           % Force acting on obstacle
           f_link = Jct_ps_inv*tau;
-          f_obs = c*norm(f_link)*[-sin(q_sim(j)); cos(q_sim(j))];
-                    
+          f_obs = norm(f_link)*[-sin(q_sim(j)); cos(q_sim(j))];
+          
+          % Make sure the force acting back on the link has the opposite
+          % sign than the one acting on the obstacle.
+          if f_link(1)*f_obs(1) < 0
+             f_obs(1) = -1*f_obs(1); 
+          end
+          if f_link(2)*f_obs(2) < 0
+             f_obs(2) = -1*f_obs(2); 
+          end
+          
           % Torque from obstacle
-          tauc = tauc + Jc'*f_obs; % Er dette lov???????
-          %%
+          tauc = tauc - Jc'*f_obs;
+          
         end
       end
     end
 
   end
   
-  %tauc = [tauc; 0; 0]; % zero for virtual joints
 end
