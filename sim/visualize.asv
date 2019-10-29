@@ -37,16 +37,16 @@ function visualize(pos, x0, y0)
         
         c = zeros(n,2);
         for i = 1:n
-           c(i,:) = pos(i,:)*0.3; 
+           c(i) = pos(i,:)*0.3; 
         end
         
         x0 = x0*0.3;
         y0 = y0*0.3;
         
-        set(p(1),'xdata',[x0    c(1,1)],'ydata',[y0 c(1,2)]);
-        for i = 2:n
-            set(p(i),'xdata',[c(i-1,1) c(i,1)],'ydata',[c(i-1,2) c(i,2)]);
-        end
+        set(p(1),'xdata',[x0    c1(1)],'ydata',[y0 c1(2)]);
+        set(p(2),'xdata',[c1(1) c2(1)],'ydata',[c1(2) c2(2)]);
+        set(p(3),'xdata',[c2(1) c3(1)],'ydata',[c2(2) c3(2)]);
+        %set(p4,'xdata',[c3(1) c4(1)],'ydata',[c3(2) c4(2)]);
         
         drawnow;
     end
