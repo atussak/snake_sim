@@ -20,8 +20,8 @@ q_dot_dot = zeros(N,Ns);
 q(:,1)    = q0;
 
 tau_motor       = zeros(N,1); % motor torque
-%tau_motor(2,1)  = 0.01;
-tau_motor(4,1)  = 0.01;
+tau_motor(2,1)  = -0.01;
+%tau_motor(4,1)  = 0.01;
 tauc            = zeros(N,1); % torque from constraint
 tau             = zeros(N,1);
 
@@ -40,8 +40,7 @@ for k = 1:Ns-1
       q_dot(i,k) = 0;
       q_dot_dot(i,k) = 0;
     end
-  end
-   
+  end 
   
   % Calculate dynamics matrices
   M = M_func(q(:,k)');
@@ -50,20 +49,16 @@ for k = 1:Ns-1
   % Calculate joint acceleration
   q_dot_dot(:,k) = pinv(M)*(tau - C');
   
-  
-
   % Euler integration
   q_dot(:,k+1)     = q_dot(:,k) + q_dot_dot(:,k)*h;
   q(:,k+1)         = q(:,k) + q_dot(:,k)*h;
-
-  
   
   % Calculate link coordinates
   pos = kinematics(q(:,k));
   
   % Calculate torque from contact
   tauc = calc_tauc(pos, q(:,k), tau_motor);
-  tauc = zeros(N,1);
+  %tauc = zeros(N,1);
   
   x0 = q(n+1,k);
   y0 = q(n+2,k);

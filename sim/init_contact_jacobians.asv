@@ -7,7 +7,7 @@ syms lc
 
 N = n + 2;
 
-all_Jc  = sym('Jc%d', [2 N n]);
+all_Jc  = sym('Jc%d', [2 n n]);
 Jc = sym('Jc%d', [2 n]);
 
 
@@ -32,7 +32,7 @@ for i = 1:n
   end
   
   % Differentiate wrt. the generalized coordinates
-  for j = 1:N
+  for j = 1:n
     Jc(1,j) = diff(x, q(j));
     Jc(2,j) = diff(y, q(j));
   end

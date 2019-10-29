@@ -2,7 +2,9 @@ function tauc = calc_tauc(pos, q_sim, tau)
 
   global n l num_obstacles obstacle_coords Jc_func
 
-  tauc = zeros(n, 1);
+  N = n + 2;
+  
+  tauc = zeros(N, 1);
 
   % For every obstacle
   for i = 1:num_obstacles
@@ -43,24 +45,26 @@ function tauc = calc_tauc(pos, q_sim, tau)
           % Coefficient corresponding to which side of the link the
           % obstacle is lying
           c = 1;
-          obs_x = c(1);
+          obs_x = C(1);
           obs_y = C(2);
           link_pos = A + (B-A)*l_to_obs/l; % point on link perp. to obstacle
           link_x = link_pos(1);
           link_y = link_pos(2);
           
-          if abs(link_x-obs_x) < abs(link_y-obs_y) % Decide based on left/right
-              if obs_x > link_x
+          %if abs(link_x-obs_x) < abs(link_y-obs_y) % Decide based on left/right
+              if obs_x < link_x
+                  "Obstacle left"
                   c = -1;
               end
-          else % Decide based on over/under
-              if obs_y < link_y
-                 c = -1; 
-              end
-          end
-          
+%           else % Decide based on over/under
+%               if obs_y < link_y
+%                  "Obstacle under" 
+%                  c = -1; 
+%               end
+%           end
+           
           % Force acting on obstacle
-          f_link = Jct_ps_inv*tau(1:n);
+          f_link = Jct_ps_inv*tau;
           f_obs = c*norm(f_link)*[-sin(q_sim(j)); cos(q_sim(j))];
                     
           % Torque from obstacle
@@ -72,5 +76,5 @@ function tauc = calc_tauc(pos, q_sim, tau)
 
   end
   
-  tauc = [tauc; 0; 0]; % zero for virtual joints
+  %tauc = [tauc; 0; 0]; % zero for virtual joints
 end
