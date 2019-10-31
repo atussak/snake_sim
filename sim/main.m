@@ -2,7 +2,7 @@ global n q0 start
 start = true;
 
 h       = 0.01;             % sample time (s)
-simTime = 60;              % simulation duration in seconds
+simTime = 20;              % simulation duration in seconds
 Ns      = simTime/h;        % number of samples
 t       = zeros(1, Ns);     % array of simulation time steps
                             % (updated in loop)
@@ -22,8 +22,8 @@ tau             = zeros(N,1);
 
 % Initial values
 q(:,1)    = q0;
-tau_motor(2,1)  = 0.0;
-tau_motor(4,1)  = -0.005;
+tau_motor(2,1)  = 0.01;
+tau_motor(4,1)  = -0.05;
 
 
 %% Main simulation loop
@@ -59,7 +59,7 @@ for k = 1:Ns-1
   head_pos(:,k) = pos(n,:)';
 
   % Calculate torque from contact
-  tauc(:,k+1) = calc_tauc(pos, q(:,k), tau, q_dot(:,k), q_dot(:,k+1), h);
+  tauc(:,k+1) = calc_tauc(pos, q(:,k), q_dot_dot(:,k), tau_motor, M, C);
   %tauc = zeros(N,1);
   
   x0 = q(n+1,k);

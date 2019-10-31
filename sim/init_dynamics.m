@@ -67,7 +67,12 @@ K = sym('K', [1 n]);
 
 % Cartesian kinetic energy
 for i = 1:n
-   K(i) = 0.5*m*(Xd(i)^2 + Yd(i)^2) + 0.5*l/2*m*Qd(i)^2;
+   qd_tot = sym(0);
+   for j = 1:i % sum all joint velocities up until current joint to get absolute joint velocity
+     qd_tot = qd_tot + Qd(j);
+   end
+   
+   K(i) = 0.5*m*(Xd(i)^2 + Yd(i)^2) + 0.5*l^2/12*m*qd_tot^2; % moment of inertia of rod: 1/12 * ml^2
 end
 
 % Euler Lagrange

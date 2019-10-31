@@ -1,6 +1,6 @@
-function tauc = calc_tauc(pos, q_sim, qdd_sim, tau, M_dyn, C_dyn)
+function tauc = calc_tauc(pos, q_sim, tau, qd_prev, qd_sim, h)
 
-  global n m l num_obstacles obstacle_coords Jc_func
+  global n m l num_obstacles obstacle_coords Jc_func T_func
 
   N = n + 2;
   
@@ -41,8 +41,19 @@ function tauc = calc_tauc(pos, q_sim, qdd_sim, tau, M_dyn, C_dyn)
           all_Jc = Jc_func(q_sim', l_to_obs);
           Jc = all_Jc(:,:,j);
           
-          f_obs = calc_external_f(M_dyn, C_dyn, tau, Jc, qdd_sim);
+          % Calculate translational acceleration of link hitting obstacle
+          xd_prev = Jc*qd_prev;
+          xd = Jc*qd_sim;
+          xdd = (xd - xd_prev)/h;
           
+          % Force = mass*acceleration of link
+          f_obs = xdd*m; % in the reference coordinate system
+          
+          % Transfer to the coordinate system of the link
+          all_T = T_func(q_sim');
+          T = 
+          
+          %Jct_ps_inv = pinv(Jc'); % Pseudo inverse of transpose
           
           % Coefficient corresponding to which side of the link the
           % obstacle is lying
@@ -51,6 +62,7 @@ function tauc = calc_tauc(pos, q_sim, qdd_sim, tau, M_dyn, C_dyn)
           c = 1;
 
           % Force acting on obstacle
+          %f_link = Jct_ps_inv*tau;
           theta = 0;
           for p = 1:j
               theta = theta + q_sim(p);
