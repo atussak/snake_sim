@@ -22,14 +22,15 @@ tau             = zeros(N,1);
 
 % Initial values
 q(:,1)    = q0;
-tau_motor(3,1)  = -0.01;
+tau_motor(2,1)  = 0.0;
+tau_motor(4,1)  = -0.005;
 
 
 %% Main simulation loop
 for k = 1:Ns-1
   t(k+1) = k*h;
   
-  tau = tau_motor + tauc(:,k)
+  tau = tau_motor + tauc(:,k);
   
   for i = 2:n
     % Links can't cross each other

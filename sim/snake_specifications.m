@@ -12,3 +12,4 @@ q0    = zeros(n+2,1); % initial joint positions
 q0(1) = pi/6;
 q0(2) = -pi/2;
 q0(3) = pi/3;
+q0(4) = pi/2;

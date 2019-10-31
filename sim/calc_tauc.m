@@ -1,6 +1,6 @@
 function tauc = calc_tauc(pos, q_sim, tau, qd_prev, qd_sim, h)
 
-  global n m num_obstacles obstacle_coords Jc_func
+  global n m l num_obstacles obstacle_coords Jc_func
 
   N = n + 2;
   
@@ -27,7 +27,7 @@ function tauc = calc_tauc(pos, q_sim, tau, qd_prev, qd_sim, h)
       ABxAC = AB(1)*AC(2) - AB(2)*AC(1);
       
       % if AB AC is aligned
-      if abs(ABxAC) < 0.3        % if C is between A and B
+      if abs(ABxAC) < 0.1        % if C is between A and B
         k_AC = dot(AB, AC);
         k_AB = dot(AB, AB);
         if k_AC >= 0 && k_AC <= k_AB
@@ -44,11 +44,11 @@ function tauc = calc_tauc(pos, q_sim, tau, qd_prev, qd_sim, h)
           xd = Jc*qd_sim;
           xdd = (xd - xd_prev)/h;
           f_obs = xdd*m;
-          Jct_ps_inv = pinv(Jc'); % Pseudo inverse of transpose
+          %Jct_ps_inv = pinv(Jc'); % Pseudo inverse of transpose
           
           % Coefficient corresponding to which side of the link the
           % obstacle is lying
-%           c = 1;
+          c = 1;
 %           obs_x = C(1);
 %           obs_y = C(2);
 %           link_pos = A + (B-A)*l_to_obs/l; % point on link perp. to obstacle
@@ -66,20 +66,21 @@ function tauc = calc_tauc(pos, q_sim, tau, qd_prev, qd_sim, h)
 %                  c = -1; 
 %               end
 %           end
-          
+%           
           % Force acting on obstacle
           %f_link = Jct_ps_inv*tau;
-          f_link = norm(f_obs)*[-sin(q_sim(j)); cos(q_sim(j))];
+          f_link = c*norm(f_obs)*[-sin(q_sim(j)); cos(q_sim(j))];
           
           % Make sure the force acting back on the link has the opposite
           % sign than the one acting on the obstacle.
-          if f_obs(1)*f_link(1) < 0
-             f_link(1) = -1*f_link(1); 
-          end
-          if f_obs(2)*f_link(2) < 0
-             f_link(2) = -1*f_link(2); 
-          end
-          
+%           if f_obs(1)*f_link(1) > 0
+%              f_link(1) = -1*f_link(1); 
+%           end
+%           if f_obs(2)*f_link(2) > 0
+%              f_link(2) = -1*f_link(2); 
+%           end
+          f_obs;
+          f_link;
           % Torque from obstacle
           tauc = tauc + Jc'*f_link;
           
