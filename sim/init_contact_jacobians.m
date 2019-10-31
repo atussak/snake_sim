@@ -8,10 +8,10 @@ syms lc
 N = n + 2;
 
 all_Jc  = sym('Jc%d', [2 N n]);
-Jc = sym('Jc%d', [2 n]);
+Jc = sym('Jc%d', [2 N]);
 
 
-for i = 1:n
+for i = 1:n % For every link an obstacle can be in contact with
   
   % Calculate distances from base
   x = q(n+1);

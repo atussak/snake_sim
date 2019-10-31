@@ -32,7 +32,8 @@ for i = 1:n
   end
   
   % Differentiate wrt. the generalized coordinates
-  for j = 1:n
+  %for j = 1:N
+  for j = 2:n
     Jc(1,j) = diff(x, q(j));
     Jc(2,j) = diff(y, q(j));
   end

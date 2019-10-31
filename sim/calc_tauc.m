@@ -42,7 +42,7 @@ function tauc = calc_tauc(pos, q_sim, tau, qd_prev, qd_sim, h)
           Jc = all_Jc(:,:,j);
           xd_prev = Jc*qd_prev;
           xd = Jc*qd_sim;
-          xdd = (xd - xd_prev)/h;
+          xdd = (xd - xd_prev)/h
           f_obs = xdd*m;
           %Jct_ps_inv = pinv(Jc'); % Pseudo inverse of transpose
           
