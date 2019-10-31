@@ -69,7 +69,12 @@ function tauc = calc_tauc(pos, q_sim, tau, qd_prev, qd_sim, h)
 %           
           % Force acting on obstacle
           %f_link = Jct_ps_inv*tau;
-          f_link = c*norm(f_obs)*[-sin(q_sim(j)); cos(q_sim(j))];
+          theta = 0;
+          for p = 1:j
+              theta = theta + q_sim(p);
+          end
+          
+          f_link = c*norm(f_obs)*[-sin(theta); cos(theta)];
           
           % Make sure the force acting back on the link has the opposite
           % sign than the one acting on the obstacle.
