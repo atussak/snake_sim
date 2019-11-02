@@ -15,22 +15,25 @@ C = zeros(N,1);
 q         = zeros(N,Ns);
 q_dot     = zeros(N,Ns);
 q_dot_dot = zeros(N,Ns);
-pos = zeros(n,2,Ns);
+head_pos = zeros(2,Ns);
+tau_motor       = zeros(N,1); % motor torque
+tauc            = zeros(N,Ns); % torque from constraint
+tau             = zeros(N,1);
 
 % Initial values
 q(:,1)    = q0;
-
-tau_motor       = zeros(N,1); % motor torque
-tau_motor(3,1)  = -0.01;
-tauc            = zeros(N,1); % torque from constraint
-tau             = zeros(N,1);
-
+tau_motor(2,1)  = 0.00;
+tau_motor(4,1)  = -0.05;
+contact = false;
 
 %% Main simulation loop
 for k = 1:Ns-1
   t(k+1) = k*h;
-  
-  tau = tau_motor + tauc;
+  tau_motor = tau_motor - 0
+  tau = tau_motor;
+  if contact
+      tau = 10*tauc(:,k);
+  end
   
   for i = 2:n
     % Links can't cross each other
@@ -40,6 +43,7 @@ for k = 1:Ns-1
       q_dot(i,k) = 0;
       q_dot_dot(i,k) = 0;
     end
+    
   end 
   
   % Calculate dynamics matrices
@@ -47,17 +51,18 @@ for k = 1:Ns-1
   C = C_func(q(:,k)', q_dot(:,k)', q_dot_dot(:,k)');   
   
   % Calculate joint acceleration
-  q_dot_dot(:,k) = pinv(M)*(tau - C');
+  q_dot_dot(:,k) = M\(tau - C');
   
   % Euler integration
   q_dot(:,k+1)     = q_dot(:,k) + q_dot_dot(:,k)*h;
   q(:,k+1)         = q(:,k) + q_dot(:,k)*h;
   
   % Calculate link coordinates
-  pos(:,:,k) = kinematics(q(:,k));
-  
+  pos = kinematics(q(:,k));
+  head_pos(:,k) = pos(n,:)';
+
   % Calculate torque from contact
-  tauc = calc_tauc(pos, q(:,k), tau_motor);
+  [tauc(:,k+1), contact] = calc_tauc(pos, q(:,k), q_dot_dot(:,k), tau_motor, M, C);
   %tauc = zeros(N,1);
   
   x0 = q(n+1,k);
@@ -65,11 +70,9 @@ for k = 1:Ns-1
   
   % Visualize robot
   visualize(pos, x0, y0);
-  
 end
 
-
-plot_robot_data(q, q_dot, q_dot_dot, t);
+plot_robot_data(q, q_dot, q_dot_dot, head_pos, tauc, t);
 
 
 

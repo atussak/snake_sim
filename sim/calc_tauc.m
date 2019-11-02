@@ -1,9 +1,10 @@
-function tauc = calc_tauc(pos, q_sim, qdd_sim, tau, M_dyn, C_dyn)
+function [tauc, contact] = calc_tauc(pos, q_sim, qdd_sim, tau, M_dyn, C_dyn)
 
   global n m l num_obstacles obstacle_coords Jc_func
 
   N = n + 2;
   
+  contact = false;
   tauc = zeros(N, 1);
 
   % For every obstacle
@@ -33,7 +34,8 @@ function tauc = calc_tauc(pos, q_sim, qdd_sim, tau, M_dyn, C_dyn)
         if k_AC >= 0 && k_AC <= k_AB
 
           % Link j is in contact with the obstacle
-            
+          contact = true;  
+          
           % Distance from joint to obstacle:
           l_to_obs = norm(AC);
 
@@ -41,7 +43,7 @@ function tauc = calc_tauc(pos, q_sim, qdd_sim, tau, M_dyn, C_dyn)
           all_Jc = Jc_func(q_sim', l_to_obs);
           Jc = all_Jc(:,:,j);
           
-          f_obs = calc_external_f(M_dyn, C_dyn, tau, Jc, qdd_sim);
+          tau_obs = calc_external_f(M_dyn, C_dyn, tau, Jc, qdd_sim);
           
           
           % Coefficient corresponding to which side of the link the
@@ -56,7 +58,7 @@ function tauc = calc_tauc(pos, q_sim, qdd_sim, tau, M_dyn, C_dyn)
               theta = theta + q_sim(p);
           end
           
-          f_link = c*norm(f_obs)*[-sin(theta); cos(theta)];
+          %f_link = c*norm(f_obs)*[-sin(theta); cos(theta)];
           
           % Make sure the force acting back on the link has the opposite
           % sign than the one acting on the obstacle.
@@ -66,10 +68,10 @@ function tauc = calc_tauc(pos, q_sim, qdd_sim, tau, M_dyn, C_dyn)
 %           if f_obs(2)*f_link(2) > 0
 %              f_link(2) = -1*f_link(2); 
 %           end
-          f_obs;
-          f_link;
+%           f_obs;
+%           f_link;
           % Torque from obstacle
-          tauc = tauc + Jc'*f_link;
+          tauc = tauc + tau_obs; %Jc'*f_link;
           
         end
       end
