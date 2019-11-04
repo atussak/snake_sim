@@ -15,21 +15,27 @@ C = zeros(N,1);
 q         = zeros(N,Ns);
 q_dot     = zeros(N,Ns);
 q_dot_dot = zeros(N,Ns);
-head_pos = zeros(2,Ns);
-tau_motor       = zeros(N,1); % motor torque
-tauc            = zeros(N,Ns); % torque from constraint
-tau             = zeros(N,1);
+head_pos  = zeros(2,Ns);
+tau_motor = zeros(N,1); % motor torque
+tauc      = zeros(N,Ns); % torque from constraint
+tau       = zeros(N,1);
 
 % Initial values
 q(:,1)    = q0;
-tau_motor(2,1)  = 0.00;
-tau_motor(4,1)  = -0.05;
+q_ref     = q0;
+q_ref(2,1)= 0;
+% tau_motor(2,1)  = 0.00;
+% tau_motor(4,1)  = -0.05;
 contact = false;
+error    = zeros(N,Ns);
+error_d  = zeros(N,Ns);
+error_dd = zeros(N,Ns);
+
 
 %% Main simulation loop
 for k = 1:Ns-1
   t(k+1) = k*h;
-  tau_motor = tau_motor - 0
+  %tau_motor(4,1) = tau_motor(4,1) + 0.0001;
   tau = tau_motor;
   if contact
       tau = 10*tauc(:,k);
@@ -50,8 +56,15 @@ for k = 1:Ns-1
   M = M_func(q(:,k)');
   C = C_func(q(:,k)', q_dot(:,k)', q_dot_dot(:,k)');   
   
+  % Control torque
+  qdd_ref = zeros(N,1);
+  kd = -0.1;
+  kp = -0.1;
+  tau_control = M*(qdd_ref + kd*error_d(:,k) + kp*error(:,k)) + C'
+  tau_control(1) = 0; tau_control(n+1:n+2) = 0;
+  
   % Calculate joint acceleration
-  q_dot_dot(:,k) = M\(tau - C');
+  q_dot_dot(:,k) = M\(tau_control*0.1 - C');
   
   % Euler integration
   q_dot(:,k+1)     = q_dot(:,k) + q_dot_dot(:,k)*h;
@@ -62,11 +75,17 @@ for k = 1:Ns-1
   head_pos(:,k) = pos(n,:)';
 
   % Calculate torque from contact
-  [tauc(:,k+1), contact] = calc_tauc(pos, q(:,k), q_dot_dot(:,k), tau_motor, M, C);
+  %[tauc(:,k+1), contact] = calc_tauc(pos, q(:,k), q_dot_dot(:,k), tau_motor, M, C);
   %tauc = zeros(N,1);
   
   x0 = q(n+1,k);
   y0 = q(n+2,k);
+  
+  % Control
+  error(:,k+1)    = q(:,k) - q_ref;
+  error(1,k+1)=0; error(n+1:n+2,k+1) = 0;
+  error_d(:,k+1)  = (error(:,k+1)-error(:,k))/h;
+  error_dd(:,k+1) = (error_d(:,k+1)-error_d(:,k))/h;
   
   % Visualize robot
   visualize(pos, x0, y0);
