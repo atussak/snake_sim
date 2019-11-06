@@ -1,11 +1,12 @@
-function [tauc, contact] = calc_tauc(pos, q_sim, qdd_sim, tau, M_dyn, C_dyn)
+function [tauc, contact, Jc] = calc_tauc(pos, q_sim, qdd_sim, tau, M_dyn, C_dyn)
 
   global n m l num_obstacles obstacle_coords Jc_func
 
   N = n + 2;
   
   contact = false;
-  tauc = zeros(N, 1);
+  tauc = zeros(N,1);
+  Jc = zeros(2,N+1,n);
 
   % For every obstacle
   for i = 1:num_obstacles
@@ -33,7 +34,7 @@ function [tauc, contact] = calc_tauc(pos, q_sim, qdd_sim, tau, M_dyn, C_dyn)
         k_AB = dot(AB, AB);
         if k_AC >= 0 && k_AC <= k_AB
 
-          % Link j is in contact with the obstacle
+          %% Link j is in contact with the obstacle
           contact = true;  
           
           % Distance from joint to obstacle:
@@ -41,7 +42,7 @@ function [tauc, contact] = calc_tauc(pos, q_sim, qdd_sim, tau, M_dyn, C_dyn)
 
           % Jacobian
           all_Jc = Jc_func(q_sim', l_to_obs);
-          Jc = all_Jc(:,:,j);
+          Jc(:,:,j) = all_Jc(:,:,j);
           
           tau_obs = calc_external_f(M_dyn, C_dyn, tau, Jc, qdd_sim);
           
