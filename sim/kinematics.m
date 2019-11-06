@@ -2,7 +2,7 @@ function pos = kinematics(q_sim)
 
   % Homogeneous matrices
   global T_func n
-  
+    
   T = T_func(q_sim');
 
   pos = zeros(n,2);
