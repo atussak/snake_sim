@@ -7,7 +7,7 @@ function visualize(pos, x0, y0)
     s = 0.25;
     % Offset to move the origin of the coordinate frame
     ox = 2;
-    oy = 0.2;
+    oy = 0;
     
     if start
         start = false;
@@ -25,8 +25,8 @@ function visualize(pos, x0, y0)
         
         % base frame
         a = 1;
-        ocx = ox*s*10;
-        ocy = oy*s*10;
+        ocx = ox*2.6;
+        ocy = oy*2.8;
         plot([0-ocx 1-ocx]*0.1*a,[0-ocy 0-ocy]*0.1*a,'r');     % base frame (x-axis)
         plot([0-ocx 0-ocx]*0.1*a,[0-ocy 1-ocy]*0.1*a,'g');     % base frame (y-axis)
         
