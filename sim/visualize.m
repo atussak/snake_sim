@@ -3,6 +3,9 @@ function visualize(pos, x0, y0)
     persistent p
     global start obstacle_coords num_obstacles n
 
+    % Scaling factor
+    s = 0.25;
+    
     if start
         start = false;
         figure('Resize','on','NumberTitle','on');
@@ -26,7 +29,7 @@ function visualize(pos, x0, y0)
         for i = 1:num_obstacles
            x_obs = obstacle_coords(i,1);
            y_obs = obstacle_coords(i,2);
-           plot(x_obs*0.3, y_obs*0.3, '^r', 'MarkerFaceColor','r') 
+           plot(x_obs*s, y_obs*s, '^r', 'MarkerFaceColor','r') 
         end
         
         hold off;
@@ -37,11 +40,11 @@ function visualize(pos, x0, y0)
         
         c = zeros(n,2);
         for i = 1:n
-           c(i,:) = pos(i,:)*0.3; 
+           c(i,:) = pos(i,:)*s;
         end
         
-        x0 = x0*0.3;
-        y0 = y0*0.3;
+        x0 = x0*s;
+        y0 = y0*s;
         
         set(p(1),'xdata',[x0    c(1,1)],'ydata',[y0 c(1,2)]);
         for i = 2:n
