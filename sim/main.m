@@ -63,8 +63,11 @@ for k = 1:Ns-1
 
   % Project torque onto the allowable force space
   if contact
+      a = tau'
       tau = P_af*tau;
+      b = tau'
       tau = saturate(tau);
+      c = tau'
   end
   
   % Calculate joint acceleration
@@ -74,8 +77,8 @@ for k = 1:Ns-1
   q_dot(:,k+1)     = q_dot(:,k) + q_dot_dot(:,k)*h;
   if contact
     q_dot_proj = P_ap*q_dot(:,k+1);
-    q_dot(2:n,k+1) = q_dot_proj(2:n);
-    q_dot(:,k+1)
+    q_dot(:,k+1) = q_dot_proj;
+    q_dot(:,k+1);
   end
   q(:,k+1)         = q(:,k) + q_dot(:,k)*h;
   

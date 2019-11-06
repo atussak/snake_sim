@@ -5,15 +5,24 @@ function [P_af, P_ap, contact] = calc_projections(pos, q_sim)
   N = n + 2;
   
   contact = false;
+  num_contacts = 0;
 
 %   Jc = zeros(2,N,n);
   Jc = zeros(1,N,n);
   
-  P_af = zeros(N,N);
-  P_ap = zeros(N,N);
+  % Allowable force and position space projectors
+  P_af = eye(N);
+  P_ap = eye(N);
+  
+  % Stack of matrices
+  S_P_af = [];
+  S_P_ap = [];
  
   % For every obstacle
   for i = 1:num_obstacles
+    P_af = eye(N);
+    P_ap = eye(N);
+      
     % Obstacle coordinate
     C = obstacle_coords(i,:);
 
@@ -40,6 +49,7 @@ function [P_af, P_ap, contact] = calc_projections(pos, q_sim)
 
           %% Link j is in contact with the obstacle
           contact = true;
+          num_contacts = num_contacts + 1;
           
           % Distance from joint to obstacle:
           l_to_obs = norm(AC);
@@ -50,10 +60,24 @@ function [P_af, P_ap, contact] = calc_projections(pos, q_sim)
           
           P_af = (pinv(Jc(:,:,j))*Jc(:,:,j))';
           P_ap = eye(N) - pinv(Jc(:,:,j))*Jc(:,:,j);
+          
+          S_P_af = [S_P_af P_af];
+          S_P_ap = [S_P_ap P_ap];
         end
       end
     end
 
   end
   
+  if contact
+      % Union of all P_af
+      P_af = S_P_af*pinv(S_P_af);
+
+      P_ap = S_P_ap(:,1:N)*pinv(S_P_ap(:,1:N));
+      for i = 1:num_contacts-1
+          P_temp = S_P_ap(:,N*i:N*i+N);
+          P_temp = P_temp*pinv(P_temp);
+          P_ap = 2*(P_ap - P_ap*pinv(P_ap + P_temp)*P_ap);
+      end
+  end
 end
