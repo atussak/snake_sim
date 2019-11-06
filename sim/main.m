@@ -2,7 +2,7 @@ global n q0 start
 start = true;
 
 h       = 0.01;             % sample time (s)
-simTime = 50;              % simulation duration in seconds
+simTime = 100;               % simulation duration in seconds
 Ns      = simTime/h;        % number of samples
 t       = zeros(1, Ns);     % array of simulation time steps
                             % (updated in loop)
@@ -16,7 +16,6 @@ q         = zeros(N,Ns);
 q_dot     = zeros(N,Ns);
 q_dot_dot = zeros(N,Ns);
 head_pos  = zeros(2,Ns);
-tau_motor = zeros(N,1); % motor torque
 tau       = zeros(N,1);
 P_af = zeros(N,N);
 P_ap = zeros(N,N);
@@ -24,8 +23,8 @@ P_ap = zeros(N,N);
 % Initial values
 q(:,1)    = q0;
 q_ref     = q0;
-%q_ref(2)  = 0;
-%q_ref(3)  = pi/5;
+%q_ref(2)  = -pi/3;
+%q_ref(3)  = -pi/3;
 q_ref(4)  = -pi/2;
 
 contact = false;
@@ -74,7 +73,8 @@ for k = 1:Ns-1
   % Euler integration
   q_dot(:,k+1)     = q_dot(:,k) + q_dot_dot(:,k)*h;
   if contact
-    q_dot(:,k+1) = P_ap*q_dot(:,k+1);
+    q_dot_proj = P_ap*q_dot(:,k+1);
+    q_dot(2:n,k+1) = q_dot_proj(2:n);
     q_dot(:,k+1)
   end
   q(:,k+1)         = q(:,k) + q_dot(:,k)*h;

@@ -6,8 +6,7 @@ function [P_af, P_ap, contact] = calc_projections(pos, q_sim)
   
   contact = false;
 
-%   Jc = zeros(2,N,n);
-  Jc = zeros(1,N,n);
+  Jc = zeros(2,N,n);
   
   P_af = zeros(N,N);
   P_ap = zeros(N,N);
@@ -33,13 +32,13 @@ function [P_af, P_ap, contact] = calc_projections(pos, q_sim)
       ABxAC = AB(1)*AC(2) - AB(2)*AC(1);
       
       % if AB AC is aligned
-      if abs(ABxAC) < 0.1      % if C is between A and B
+      if abs(ABxAC) < 0.2        % if C is between A and B
         k_AC = dot(AB, AC);
         k_AB = dot(AB, AB);
         if k_AC >= 0 && k_AC <= k_AB
 
           %% Link j is in contact with the obstacle
-          contact = true;
+          contact = true;  
           
           % Distance from joint to obstacle:
           l_to_obs = norm(AC);
