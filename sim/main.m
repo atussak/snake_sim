@@ -2,7 +2,7 @@ global n q0 start
 start = true;
 
 h       = 0.01;             % sample time (s)
-simTime = 100;               % simulation duration in seconds
+simTime = 20;               % simulation duration in seconds
 Ns      = simTime/h;        % number of samples
 t       = zeros(1, Ns);     % array of simulation time steps
                             % (updated in loop)
@@ -16,7 +16,7 @@ q         = zeros(N,Ns);
 q_dot     = zeros(N,Ns);
 q_dot_dot = zeros(N,Ns);
 head_pos  = zeros(2,Ns);
-tau       = zeros(N,1);
+tau       = zeros(N,Ns);
 P_af = zeros(N,N);
 P_ap = zeros(N,N);
 
@@ -59,19 +59,16 @@ for k = 1:Ns-1
   tau_control = M*(qdd_ref + kd*error_d(:,k) + kp*error(:,k)) + C';
     
   % Saturate control torque
-  tau = saturate(tau_control);
+  tau(:,k) = saturate(tau_control);
 
   % Project torque onto the allowable force space
   if contact
-      a = tau'
-      tau = P_af*tau;
-      b = tau'
-      tau = saturate(tau);
-      c = tau'
+      tau(:,k) = P_af*tau(:,k);
+      tau(:,k) = saturate(tau(:,k));
   end
   
   % Calculate joint acceleration
-  q_dot_dot(:,k) = M\(tau - C');
+  q_dot_dot(:,k) = M\(tau(:,k) - C');
   
   % Euler integration
   q_dot(:,k+1)     = q_dot(:,k) + q_dot_dot(:,k)*h;
@@ -101,7 +98,7 @@ for k = 1:Ns-1
   visualize(pos, x0, y0);
 end
 
-% plot_robot_data(q, q_dot, q_dot_dot, head_pos, tauc, t);
+% plot_robot_data(q, q_dot, q_dot_dot, head_pos, tau, t);
 
 
 
