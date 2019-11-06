@@ -2,7 +2,7 @@ global n q0 start
 start = true;
 
 h       = 0.01;             % sample time (s)
-simTime = 30;              % simulation duration in seconds
+simTime = 50;              % simulation duration in seconds
 Ns      = simTime/h;        % number of samples
 t       = zeros(1, Ns);     % array of simulation time steps
                             % (updated in loop)
@@ -23,16 +23,16 @@ tau       = zeros(N,1);
 % Initial values
 q(:,1)    = q0;
 q_ref     = q0;
-q_ref(2)  = 0;
-q_ref(3)  = pi/5;
-q_ref(4)  = 0;
+%q_ref(2)  = 0;
+%q_ref(3)  = pi/5;
+q_ref(4)  = -pi/2;
 
 contact = false;
 
 error    = zeros(N,Ns);
 error_d  = zeros(N,Ns);
 
-Jc = zeros(2,N,n);
+Jc = zeros(2,N+1,n);
 
 
 %% Main simulation loop
@@ -73,8 +73,15 @@ for k = 1:Ns-1
   % Saturate control torque
   tau = saturate(tau_control);
 
-%   
-%   Jc = Jc(:,:,4);
+  % Project torque onto the allowable force space
+  if contact
+      Jc = Jc(:,:,4);
+      P_af = (pinv(Jc)*Jc)';
+      prev = tau;
+      tau = P_af(1:N,1:N)*tau;
+      tau = saturate(tau);
+  end
+  
 %   f = pinv(Jc')*(M*qdd_ref + C' - tau);
 %   tau2 = -Jc'*f;
 %   f_robot = pinv(Jc')*tau;
@@ -86,6 +93,11 @@ for k = 1:Ns-1
   
   % Euler integration
   q_dot(:,k+1)     = q_dot(:,k) + q_dot_dot(:,k)*h;
+  if contact
+    P_ap = eye(N+1) - pinv(Jc)*Jc;
+    q_dot(:,k+1) = P_ap(1:N,1:N)*q_dot(:,k+1);
+    q_dot(:,k+1)
+  end
   q(:,k+1)         = q(:,k) + q_dot(:,k)*h;
   
   % Calculate link coordinates
@@ -93,7 +105,7 @@ for k = 1:Ns-1
   head_pos(:,k) = pos(n,:)';
 
   % Calculate torque from contact
-  %[tauc(:,k+1), contact, Jc] = calc_tauc(pos, q(:,k), q_dot_dot(:,k), tau, M, C);
+  [tauc(:,k+1), contact, Jc] = calc_tauc(pos, q(:,k), q_dot_dot(:,k), tau, M, C);
   %tauc = zeros(N,1);
   
   x0 = q(n+1,k); 
