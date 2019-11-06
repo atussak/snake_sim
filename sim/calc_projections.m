@@ -1,4 +1,4 @@
-function [P_af, P_ap, contact] = calc_tauc(pos, q_sim)
+function [P_af, P_ap, contact] = calc_projections(pos, q_sim)
 
   global n num_obstacles obstacle_coords Jc_func
 

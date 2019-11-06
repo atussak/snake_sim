@@ -84,7 +84,7 @@ for k = 1:Ns-1
   head_pos(:,k) = pos(n,:)';
 
   % Calculate torque from contact
-  [P_af, P_ap, contact] = calc_tauc(pos, q(:,k));
+  [P_af, P_ap, contact] = calc_projections(pos, q(:,k));
   
   x0 = q(n+1,k); 
   y0 = q(n+2,k);
