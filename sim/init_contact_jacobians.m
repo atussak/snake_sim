@@ -7,8 +7,8 @@ syms lc
 
 N = n + 2;
 
-all_Jc  = sym('Jc%d', [2 N n]);
-Jc = sym('Jc%d', [2 N]);
+all_Jc  = sym('Jc%d', [2 N+1 n]);
+Jc = sym('Jc%d', [2 N+1]);
 
 % all_Jc  = sym('Jc%d', [1 N n]);
 % Jc = sym('Jc%d', [2 N]);
@@ -46,6 +46,9 @@ for i = 1:n % For every link an obstacle can be in contact with
     Jc(1,j) = diff(x, q(j));
     Jc(2,j) = diff(y, q(j));
   end
+  
+  Jc(1,N+1) = diff(x, lc);
+  Jc(2,N+1) = diff(y, lc);
   
   Jc = simplify(Jc);
 %   Jc = R*Jc;

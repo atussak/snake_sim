@@ -34,10 +34,10 @@ for i = 1:n % For every link an obstacle can be in contact with
   end
   
   % Rotate to express in obstacle frame
-%   q_sum = sum(q(1:i));
-%   R = [cos(q_sum) -sin(q_sum);
-%        sin(q_sum)  cos(q_sum)];
-%   pos_b = [x; y];
+  q_sum = sum(q(1:i));
+  R = [cos(q_sum) -sin(q_sum);
+       sin(q_sum)  cos(q_sum)];
+  pos_b = [x; y];
 %   pos_c = R*pos_b;
 %   x = pos_c(1);
   
@@ -47,10 +47,11 @@ for i = 1:n % For every link an obstacle can be in contact with
     Jc(2,j) = diff(y, q(j));
   end
   
-  Jc = simplify(Jc);
-  Jc = R*Jc;
   
-  all_Jc(:,:,i)  = Jc(1,:);
+  Jc = simplify(Jc);
+%   Jc = R*Jc;
+  
+  all_Jc(:,:,i)  = Jc;
 end
 
 Jc_func = matlabFunction(all_Jc, 'vars', {q, lc});

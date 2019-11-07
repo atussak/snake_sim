@@ -2,7 +2,7 @@ function [P_af, P_ap, contact] = calc_projections(pos, q_sim)
 
   global n num_obstacles obstacle_coords Jc_func
 
-  N = n + 2;
+  N = n + 2 + 1;
   
   contact = false;
   num_contacts = 0;
@@ -83,4 +83,6 @@ function [P_af, P_ap, contact] = calc_projections(pos, q_sim)
           P_ap = 2*(P_ap - P_ap*pinv(P_ap + P_temp)*P_ap);
       end
   end
+  P_af = P_af(1:N-1, 1:N-1);
+  P_ap = P_ap(1:N-1, 1:N-1);
 end
