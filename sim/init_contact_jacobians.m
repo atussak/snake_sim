@@ -7,11 +7,11 @@ syms lc
 
 N = n + 2;
 
-% all_Jc  = sym('Jc%d', [2 N n]);
-% Jc = sym('Jc%d', [2 N]);
+all_Jc  = sym('Jc%d', [2 N n]);
+Jc = sym('Jc%d', [2 N]);
 
-all_Jc  = sym('Jc%d', [1 N n]);
-Jc = sym('Jc%d', [1 N]);
+% all_Jc  = sym('Jc%d', [1 N n]);
+% Jc = sym('Jc%d', [2 N]);
 
 for i = 1:n % For every link an obstacle can be in contact with
   
@@ -38,16 +38,19 @@ for i = 1:n % For every link an obstacle can be in contact with
   R = [cos(q_sum) -sin(q_sum);
        sin(q_sum)  cos(q_sum)];
   pos_b = [x; y];
-  pos_c = R*pos_b;
-  x = pos_c(1);
+%   pos_c = R*pos_b;
+%   x = pos_c(1);
   
   % Differentiate wrt. the generalized coordinates
   for j = 1:N
     Jc(1,j) = diff(x, q(j));
-    % Jc(2,j) = diff(y, q(j));
+    Jc(2,j) = diff(y, q(j));
   end
   
-  all_Jc(:,:,i)  = simplify(Jc);
+  Jc = simplify(Jc);
+%   Jc = R*Jc;
+  
+  all_Jc(:,:,i)  = Jc;
 end
 
 Jc_func = matlabFunction(all_Jc, 'vars', {q, lc});

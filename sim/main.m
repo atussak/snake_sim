@@ -2,7 +2,7 @@ global n q0 start
 start = true;
 
 h       = 0.01;             % sample time (s)
-simTime = 20;               % simulation duration in seconds
+simTime = 100;               % simulation duration in seconds
 Ns      = simTime/h;        % number of samples
 t       = zeros(1, Ns);     % array of simulation time steps
                             % (updated in loop)
@@ -24,8 +24,8 @@ P_ap = zeros(N,N);
 q(:,1)    = q0;
 q_ref     = q0;
 %q_ref(2)  = -pi/3;
-%q_ref(3)  = -pi/3;
-q_ref(4)  = -pi/2;
+% q_ref(3)  = -pi/3;
+q_ref(4)  = -pi/1.8;
 
 contact = false;
 
@@ -86,7 +86,7 @@ for k = 1:Ns-1
   % Calculate torque from contact
   [P_af, P_ap, contact] = calc_projections(pos, q(:,k));
   
-  x0 = q(n+1,k); 
+  x0 = q(n+1,k);
   y0 = q(n+2,k);
   
   % Control

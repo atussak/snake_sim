@@ -7,8 +7,8 @@ function [P_af, P_ap, contact] = calc_projections(pos, q_sim)
   contact = false;
   num_contacts = 0;
 
-%   Jc = zeros(2,N,n);
-  Jc = zeros(1,N,n);
+  Jc = zeros(2,N,n);
+%   Jc = zeros(1,N,n);
   
   % Allowable force and position space projectors
   P_af = eye(N);
@@ -69,13 +69,16 @@ function [P_af, P_ap, contact] = calc_projections(pos, q_sim)
 
   end
   
+  num_contacts;
+  
   if contact
       % Union of all P_af
-      P_af = S_P_af*pinv(S_P_af);
+      P_af = S_P_af*pinv(S_P_af)
 
+      % Intersect of all P_ap
       P_ap = S_P_ap(:,1:N)*pinv(S_P_ap(:,1:N));
-      for i = 1:num_contacts-1
-          P_temp = S_P_ap(:,N*i:N*i+N);
+      for i = 2:num_contacts
+          P_temp = S_P_ap(:,N*(i-1)+1:N*i);
           P_temp = P_temp*pinv(P_temp);
           P_ap = 2*(P_ap - P_ap*pinv(P_ap + P_temp)*P_ap);
       end
