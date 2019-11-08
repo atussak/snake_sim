@@ -1,6 +1,6 @@
 function tau_ext = calc_ext_torque(M, C, tau, q, qd, in_contact)
     
-    global n l_to_obstacles obstacle_coords
+    global n obstacle_coords
     
     N = n + 2;
     tau_ext = zeros(N,1);
