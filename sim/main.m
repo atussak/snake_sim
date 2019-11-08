@@ -15,6 +15,7 @@ q_dot     = zeros(N,Ns);
 q_dot_dot = zeros(N,Ns);
 head_pos  = zeros(2,Ns);
 tau       = zeros(N,Ns);
+tau_ext   = zeros(N,1);
 in_contact = zeros(1,n);
 P_af = zeros(N,N);
 P_ap = zeros(N,N);
@@ -22,7 +23,7 @@ P_ap = zeros(N,N);
 % Initial values
 q(:,1)    = q0;
 q_ref     = q0;
-q_ref(2)  = -pi/8;
+q_ref(2)  = -pi/1.5;
 % q_ref(3)  = -pi/3;
 %q_ref(4)  = -pi/1.5;
 
@@ -59,6 +60,9 @@ for k = 1:Ns-1
     
   % Saturate control torque
   tau(:,k) = saturate(tau_control);
+  if contact
+    tau_ext  = calc_ext_torque(M, C', tau(:,k), q(:,k), q_dot(:,k), in_contact);
+  end
   
   % Calculate joint acceleration
   q_dot_dot(:,k) = pinv(M)*(tau(:,k) - C');
@@ -72,7 +76,7 @@ for k = 1:Ns-1
   head_pos(:,k) = pos(n,:)';
 
   % Calculate torque from contact
-  %[P_af, P_ap, contact, in_contact] = calc_projections(pos, k);
+  [P_af, P_ap, contact, in_contact] = calc_projections(pos, k);
   
   x0 = q(n+1,k);
   y0 = q(n+2,k);
