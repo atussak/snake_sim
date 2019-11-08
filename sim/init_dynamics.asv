@@ -1,16 +1,14 @@
 
 % Snake robot specifications
-global n m l N
+global n m l
 
 % Joint angles and velocities
 
-global q qd qdd Q Qd Qdiff
+global q qd qdd Q Qd num_obstacles
 syms t
 
-% All virtual and real joints
-N = n + 2 + n; % 2 for the virtual x- and y-coordinates
-               % + length to every possible obstacle from last joint
-               % (maximum one obstacle per link)
+N = n + 2 + num_obstacles; % 2 for the virtual x- and y-coordinates
+                           % + length to every obstacle from last joint
 
 Q       = sym('q'  , [1 N]); % time dependency specified
 q       = sym('q'  , [1 N]); % time dependency not specified

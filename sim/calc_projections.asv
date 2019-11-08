@@ -1,10 +1,11 @@
-function [P_af, P_ap, contact, in_contact] = calc_projections(pos, k)
+function [P_af, P_ap, contact, in_contact] = calc_projections(pos, q_sim)
 
-  global n N num_obstacles obstacle_coords Jc_func q
+  global n N num_obstacles obstacle_coords Jc_func l_to_obstacles
   
   contact = false;
   num_contacts = 0;
   in_contact = zeros(1,n);
+  l_to_obstacles = zeros(1,n);
 
   Jc = zeros(2,N,n);
   
@@ -28,7 +29,7 @@ function [P_af, P_ap, contact, in_contact] = calc_projections(pos, k)
     for j = 1:n
       % Link line segment A-B
       B = pos(j,:);
-      A = [q(n+1,k) q(n+2,k)]; % Last joint in origin if first link
+      A = [q_sim(n+1) q_sim(n+2)]; % Last joint in origin if first link
       if j ~= 1 
         A = pos(j-1,:); % Last joint in pos of last link pos
       end
@@ -52,12 +53,10 @@ function [P_af, P_ap, contact, in_contact] = calc_projections(pos, k)
           
           % Distance from joint to obstacle:
           l_to_obs = norm(AC);
-          q(n+2+j,k) = l_to_obs;
-          q(n+2+j,k) = l_to_obs;
-          q(n+2+j,k+1) = q(n+2+j,k); % To be used in finding tau_ext
-          
+          l_to_obstacles(j) = l_to_obs;
+
           % Jacobian
-          all_Jc = Jc_func(q(:,k)');
+          all_Jc = Jc_func(q_sim', l_to_obs);
           Jc(:,:,j) = all_Jc(:,:,j);
           
           P_af = (pinv(Jc(:,:,j))*Jc(:,:,j))';
@@ -75,7 +74,7 @@ function [P_af, P_ap, contact, in_contact] = calc_projections(pos, k)
   
   if contact
       % Union of all P_af
-      P_af = S_P_af*pinv(S_P_af);
+      P_af = S_P_af*pinv(S_P_af)
 
       % Intersect of all P_ap
       P_ap = S_P_ap(:,1:N)*pinv(S_P_ap(:,1:N));

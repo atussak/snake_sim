@@ -1,8 +1,7 @@
 clear
 
-snake_specifications
-
+init_obstacles
+init_snake
 init_dynamics
 init_kinematics
-init_obstacles
 init_contact_jacobians

@@ -43,36 +43,19 @@ for i = 1:n % For every link an obstacle can be in contact with
   
   %% Derivative of Jacobian
   % Make variables time dependent to diff wrt time
-  for row = 1:2
-      for col = 1:N
-          for j = 1:N
-            Jc(row,col) = subs(Jc(row,col), q(j), Q(j));
-          end
-      end
+  for j = 1:N
+    Jc = subs(Jc, Q(j), q(j));
   end
   
-  for row = 1:2
-      for col = 1:N
-          Jcd(row,col) = diff(Jc(row,col), t);
-      end
-  end
-  Jcd;
+  Jcd = diff(Jc, t);
   
-  for row = 1:2
-      for col = 1:N
-          for j = 1:N
-            Jcd(row, col) = subs(Jcd(row, col), Qdiff(j), qd(j));
-          end
-          for j = 1:N
-            Jcd(row, col) = subs(Jcd(row, col), Q(j), q(j));
-            Jcd(row, col) = subs(Jcd(row, col), Qd(j), qd(j));
-          end
-      end
+  for j = 1:N
+    Jcd = subs(Jcd, Q(j), q(j));
   end
   
   all_Jcd(:,:,i) = Jcd;
   
 end
 
-Jc_func  = matlabFunction(all_Jc, 'vars', {q});
-Jcd_func = matlabFunction(all_Jcd, 'vars', {q, qd});
+Jc_func  = matlabFunction(all_Jc, 'vars', {q, lc});
+Jcd_func = matlabFunction(all_Jcd, 'vars', {q, qd, lc});

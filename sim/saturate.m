@@ -1,9 +1,9 @@
 function tau = saturate(tau_control)
-    global n
+    global n N
     
     max = 0.08;
     
-    tau = zeros(n+2,1);
+    tau = zeros(N,1);
     
     for i = 2:n
        if tau_control(i) > max || tau_control(i) < -max
