@@ -1,7 +1,7 @@
 function tau = saturate(tau_control)
     global n N
     
-    max = 0.08;
+    max = 1;
     
     tau = zeros(N,1);
     
