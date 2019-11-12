@@ -60,7 +60,8 @@ for k = 1:Ns-1
     
   % Saturate control torque
   tau(:,k) = saturate(tau_control);
-  if contact
+  
+  if false%contact
     tau_ext  = calc_ext_torque(M, C', tau(:,k), q(:,k), q_dot(:,k), q_dot(:,k-1), in_contact);
     tau(:,k) = tau(:,k) + tau_ext;
   end
@@ -87,8 +88,9 @@ for k = 1:Ns-1
   
   % Control
   error(:,k+1)    = q_ref - q(:,k);
-  error(1,k+1)=0; error(n+1:n+2,k+1) = 0;
-  error_d(:,k+1)  = (error(:,k+1)-error(:,k))/h; %-q_dot(:,k);
+  error(1,k+1)=0; error(n+1:N,k+1) = 0;
+  error_d(:,k+1)  = (error(:,k+1)-error(:,k))/h;
+
   
   % Visualize robot
   visualize(pos, x0, y0);
