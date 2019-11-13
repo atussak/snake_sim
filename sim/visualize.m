@@ -1,3 +1,14 @@
+
+% --------------------------------------------------------
+% This function takes care of the visual simulation of the
+% 2D snake robot as well as the obstacles.
+% For every time it is called, it deletes old drawings of
+% links and replaces them with updated ones.
+% The obstacles and the world frame illustration will just
+% be drawn once and remain in this position.
+% --------------------------------------------------------
+
+
 function visualize(pos, x0, y0)
 
     persistent p
@@ -11,9 +22,11 @@ function visualize(pos, x0, y0)
     
     if start
         start = false;
+        
         figure('Resize','on','NumberTitle','on');
         hold on;
-        % make plots for links
+        
+        % Initialize plots for links
         for i = 1:n
             % Alternating colors for the links
             if mod(i,2) == 0
@@ -23,14 +36,14 @@ function visualize(pos, x0, y0)
             end
         end
         
-        % base frame
+        % Draw base frame
         a = 1;
         ocx = ox*s*10;
         ocy = oy*s*10;
         plot([0-ocx 1-ocx]*0.1*a,[0-ocy 0-ocy]*0.1*a,'r');     % base frame (x-axis)
         plot([0-ocx 0-ocx]*0.1*a,[0-ocy 1-ocy]*0.1*a,'g');     % base frame (y-axis)
         
-        % obstacles
+        % Draw obstacles
         for i = 1:num_obstacles
            x_obs = obstacle_coords(i,1)-ox;
            y_obs = obstacle_coords(i,2)-oy;
@@ -41,8 +54,11 @@ function visualize(pos, x0, y0)
         axis equal; axis off;
         set(gca,'Drawmode','Fast','NextPlot','ReplaceChildren');
         axis([-a a -a a]);
+        
     else
         
+        % Re-draw links
+      
         c = zeros(n,2);
         for i = 1:n
            c(i,:) = (pos(i,:)-[ox,oy])*s;

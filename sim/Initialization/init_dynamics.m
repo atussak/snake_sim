@@ -1,16 +1,21 @@
 
+% --------------------------------------------------------
+% Find symbolic expressions for the M- and C matrices from
+% the classical robot dynamic equation.
+% --------------------------------------------------------
+
 % Snake robot specifications
 global n m l N
 
 % Joint angles and velocities
-
 global q qd qdd Q Qd Qdiff
 syms t
 
 % All virtual and real joints
-N = n + 2 + n; % 2 for the virtual x- and y-coordinates
-               % + length to every possible obstacle from last joint
-               % (maximum one obstacle per link)
+N = n + 2 + n; % n   : one joint per link
+               % + 2 : for the virtual x- and y-coordinates
+               % + n : length to every possible obstacle from last joint
+               %       (maximum one obstacle per link)
 
 Q       = sym('q'  , [1 N]); % time dependency specified
 q       = sym('q'  , [1 N]); % time dependency not specified
@@ -18,7 +23,7 @@ Qd      = sym('qd' , [1 N]); % time dependency specified
 qd      = sym('qd' , [1 N]); % time dependency not specified
 qdd     = sym('qdd', [1 N]); % time dependency not specified
 
-% make time dependent
+% Make symbols time dependent for possibility to differentiate wrt time
 for i = 1:N
     syms(sprintf('q%d(t)', i))
     syms(sprintf('qd%d(t)', i))
@@ -29,32 +34,31 @@ end
 Qdiff  = diff(Q,t);
 Qddiff = diff(Qd,t);
 
-% Cartesian positions
-
+%% Cartesian positions
 X = sym('x', [1 n]);
 Y = sym('y', [1 n]);
 
 % Doesn't include the position of the virtual links as they don't have any
 % mass and thus no kinetic energy.
-for i = 1:n
-   X(i) = Q(n+1);
-   Y(i) = Q(n+2);
-   for j = 1:i
+for link = 1:n
+   X(link) = Q(n+1);
+   Y(link) = Q(n+2);
+   for j = 1:link
       q_temp = sym(0);
       for k = 1:j % For absolutte vinkler
          q_temp = q_temp + Q(k); 
       end
-      if j == i % To get to the center of mass (middle) of the link
-          X(i) = X(i) + (l/2)*cos(q_temp);
-          Y(i) = Y(i) + (l/2)*cos(q_temp);
+      if j == link % To get to the center of mass (middle) of the link
+          X(link) = X(link) + (l/2)*cos(q_temp);
+          Y(link) = Y(link) + (l/2)*cos(q_temp);
       else
-          X(i) = X(i) + l*cos(q_temp);
-          Y(i) = Y(i) + l*sin(q_temp);
+          X(link) = X(link) + l*cos(q_temp);
+          Y(link) = Y(link) + l*sin(q_temp);
       end
    end
 end
 
-% Cartesian velocities
+%% Cartesian velocities
 
 Xd = diff(X, t);
 Yd = diff(Y, t);
@@ -64,7 +68,7 @@ for j = 1:N
     Yd = subs(Yd, Qdiff(j), Qd(j));
 end
 
-% Kinetic energy
+%% Kinetic energy
 
 K = sym('K', [1 n]);
 
@@ -78,7 +82,7 @@ for i = 1:n
    K(i) = 0.5*m*(Xd(i)^2 + Yd(i)^2) + 0.5*l^2/12*m*qd_tot^2; % moment of inertia of rod: 1/12 * ml^2
 end
 
-% Euler Lagrange
+%% Euler Lagrange
 
 L = sum(K(:));
 
@@ -121,7 +125,7 @@ for i = 1:N
     end
 end
 
-% Extract coefficients for finding EoM characteristic eqs
+%% Extract coefficients for finding EoM characteristic eqs
 
 global M C
 
@@ -138,6 +142,8 @@ for i = 1:N
    C(i) = simplify(tau(i) - sum(M(i,:).*qdd));
 end
 
+
+%% Make functions for faster calculation at insertion of numbers
 global M_func C_func
 M_func = matlabFunction(M, 'vars', {q});
 C_func = matlabFunction(C, 'vars', {q, qd, qdd});

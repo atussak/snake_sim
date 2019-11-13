@@ -1,4 +1,13 @@
+
+% --------------------------------------------------------
+% User defined specifications.
+% Initialize position of obstacles.
+% These positions will remain constant through the simulation.
+% --------------------------------------------------------
+
+
 global obstacle_coords num_obstacles
+
 
 num_obstacles = 4;
 obstacle_coords = zeros(num_obstacles, 2);
