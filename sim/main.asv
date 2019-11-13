@@ -1,6 +1,7 @@
 global n N q0 start q
 start = true;
 
+% Simulation variables
 h       = 0.01;             % sample time (s)
 simTime = 100;              % simulation duration in seconds
 Ns      = simTime/h;        % number of samples
@@ -8,17 +9,16 @@ t       = zeros(1, Ns);     % array of simulation time steps
                             % (updated in loop)
 
 % Allocate memory
-M = zeros(N,N);
-C = zeros(N,1);
-q         = zeros(N,Ns);
-q_dot     = zeros(N,Ns);
-q_dot_dot = zeros(N,Ns);
-head_pos  = zeros(2,Ns);
-tau       = zeros(N,Ns);
-tau_ext   = zeros(N,1);
-in_contact = zeros(1,n);
-P_af = zeros(N,N);
-P_ap = zeros(N,N);
+M           = zeros(N,N);
+C           = zeros(N,1);
+q           = zeros(N,Ns);
+q_dot       = zeros(N,Ns);
+q_dot_dot   = zeros(N,Ns);
+tau         = zeros(N,Ns);
+in_contact  = zeros(1,n);
+P_af        = zeros(N,N);
+P_ap        = zeros(N,N);
+head_pos    = zeros(2,Ns); % For plotting
 
 % Initial values
 q(:,1)    = q0;
@@ -60,7 +60,8 @@ for k = 1:Ns-1
     
   % Saturate control torque
   tau(:,k) = saturate(tau_control);
-  if false%contact
+  
+  if false %contact
     tau_ext  = calc_ext_torque(M, C', tau(:,k), q(:,k), q_dot(:,k), q_dot(:,k-1), in_contact);
     tau(:,k) = tau(:,k) + tau_ext;
   end
@@ -85,17 +86,16 @@ for k = 1:Ns-1
   x0 = q(n+1,k);
   y0 = q(n+2,k);
   
+  if abs(error(4,k)) < 0.0001 && k > 1
+%       q_ref(2) = pi/2;
+      q_ref(4) = pi/1.2;
+  end
+  
   % Control
-%   error(:,k+1)    = q_ref - q(:,k);
-%   error(1,k+1)=0; error(n+1:N,k+1) = 0;
-%   error_d(:,k+1)  = (error(:,k+1)-error(:,k))/h;
+  error(:,k+1)    = q_ref - q(:,k);
+  error(1,k+1)=0; error(n+1:N,k+1) = 0;
+  error_d(:,k+1)  = (error(:,k+1)-error(:,k))/h;
 
-    qd_ref = zeros(N,1); qd_ref(4) = -0.001;
-    if contact
-
-    error_d(:,k+1) = qd_ref - q_dot(:,k);
-    error_d(1,k+1)=0; error_d(n+1:N,k+1) = 0;
-    error(:,k+1) = error_d(:,k+1)*h;
   
   % Visualize robot
   visualize(pos, x0, y0);

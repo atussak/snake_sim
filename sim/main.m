@@ -1,36 +1,37 @@
 global n N q0 start q
-start = true;
+start = true; % For initializing visual simulator
 
-h       = 0.01;             % sample time (s)
-simTime = 100;              % simulation duration in seconds
-Ns      = simTime/h;        % number of samples
-t       = zeros(1, Ns);     % array of simulation time steps
+% Simulation variables
+h        = 0.01;             % sample time (s)
+simTime  = 100;              % simulation duration in seconds
+Ns       = simTime/h;        % number of samples
+t        = zeros(1, Ns);     % array of simulation time steps
                             % (updated in loop)
 
 % Allocate memory
-M = zeros(N,N);
-C = zeros(N,1);
-q         = zeros(N,Ns);
-q_dot     = zeros(N,Ns);
-q_dot_dot = zeros(N,Ns);
-head_pos  = zeros(2,Ns);
-tau       = zeros(N,Ns);
-tau_ext   = zeros(N,1);
-in_contact = zeros(1,n);
-P_af = zeros(N,N);
-P_ap = zeros(N,N);
+M           = zeros(N,N);
+C           = zeros(N,1);
+q           = zeros(N,Ns);
+q_d         = zeros(N,Ns);
+q_dd        = zeros(N,Ns);
+tau         = zeros(N,Ns);
+error       = zeros(N,Ns);
+error_d     = zeros(N,Ns);
+in_contact  = zeros(1,n);
+P_af        = zeros(N,N);
+P_ap        = zeros(N,N);
+
+head_pos    = zeros(2,Ns); % For plotting
 
 % Initial values
 q(:,1)    = q0;
+
+% Reference values
 q_ref     = q0;
-% q_ref(2)  = pi/3;
-% q_ref(3)  = -pi/3;
 q_ref(4)  = -pi/2;
 
+% Assume no contact in the first iteration
 contact = false;
-
-error    = zeros(N,Ns);
-error_d  = zeros(N,Ns);
 
 
 %% Main simulation loop
@@ -42,15 +43,15 @@ for k = 1:Ns-1
     % Note: first link and virtual links aren't limited
     if q(i,k) > pi || q(i,k) < -pi
       q(i,k) = pi*sign(q(i,k));
-      q_dot(i,k) = 0;
-      q_dot_dot(i,k) = 0;
+      q_d(i,k) = 0;
+      q_dd(i,k) = 0;
     end
     
   end 
   
   % Calculate dynamics matrices
   M = M_func(q(:,k)');
-  C = C_func(q(:,k)', q_dot(:,k)', q_dot_dot(:,k)');   
+  C = C_func(q(:,k)', q_d(:,k)', q_dd(:,k)');   
   
   % Computed torque control
   qdd_ref = zeros(N,1);
@@ -61,20 +62,20 @@ for k = 1:Ns-1
   % Saturate control torque
   tau(:,k) = saturate(tau_control);
   
-  if false%contact
-    tau_ext  = calc_ext_torque(M, C', tau(:,k), q(:,k), q_dot(:,k), q_dot(:,k-1), in_contact);
+  if false %contact
+    tau_ext  = calc_ext_torque(M, C', tau(:,k), q(:,k), q_d(:,k), q_d(:,k-1), in_contact);
     tau(:,k) = tau(:,k) + tau_ext;
   end
   
   % Calculate joint acceleration
-  q_dot_dot(:,k) = pinv(M)*(tau(:,k) - C');
+  q_dd(:,k) = pinv(M)*(tau(:,k) - C');
   
   % Euler integration
-  q_dot(:,k+1)     = q_dot(:,k) + q_dot_dot(:,k)*h;
+  q_d(:,k+1)     = q_d(:,k) + q_dd(:,k)*h;
   if contact
-      q_dot(:,k+1) = P_ap*q_dot(:,k+1);
+      q_d(:,k+1) = P_ap*q_d(:,k+1);
   end
-  q(:,k+1)         = q(:,k) + q_dot(:,k)*h;
+  q(:,k+1)         = q(:,k) + q_d(:,k)*h;
   
   % Calculate link coordinates
   pos = kinematics(q(:,k));
@@ -85,6 +86,11 @@ for k = 1:Ns-1
   
   x0 = q(n+1,k);
   y0 = q(n+2,k);
+  
+  if abs(error(4,k)) < 0.0001 && k > 1
+%       q_ref(2) = pi/2;
+      q_ref(4) = pi/1.2;
+  end
   
   % Control
   error(:,k+1)    = q_ref - q(:,k);
