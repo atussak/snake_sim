@@ -1,5 +1,10 @@
 function pos = kinematics(q_sim)
 
+    % --------------------------------------------------------
+    % Uses the symbolically found transformation matrices to
+    % get the cartesian position of the end of every link.
+    % --------------------------------------------------------
+
   % Homogeneous matrices
   global T_func n
     

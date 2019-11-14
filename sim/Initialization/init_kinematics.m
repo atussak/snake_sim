@@ -1,4 +1,7 @@
-%% Transformation matrix
+
+% --------------------------------------------------------
+% Calculates the transformation matrix
+% --------------------------------------------------------
 
 global T_func q n l
 all_T = sym('T%d', [4 4 n]);

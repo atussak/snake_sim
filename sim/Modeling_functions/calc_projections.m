@@ -1,5 +1,15 @@
 function [P_af, P_ap, contact, in_contact] = calc_projections(pos, k)
 
+    % --------------------------------------------------------
+    % Find out which links and obstacles are in contact.
+    % Find out the distance between this contact and the last
+    % joint.
+    % Calculate the corresponding contact Jacobian and 
+    % projection matrices mapping into the allowable position-
+    % and force space.
+    % --------------------------------------------------------
+    
+    
   global n N num_obstacles obstacle_coords Jc_func q
   
   contact = false;
