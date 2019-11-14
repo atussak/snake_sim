@@ -35,12 +35,12 @@ function [P_af, P_ap, contact, in_contact] = calc_projections(pos, k)
     C = obstacle_coords(obs,:);
 
     % For every link
-    for link = 1:n
+    for j = 1:n
       % Link line segment A-B
-      B = pos(link,:);
+      B = pos(j,:);
       A = [q(n+1,k) q(n+2,k)]; % Last joint in origin if first link
-      if link ~= 1 
-        A = pos(link-1,:); % Last joint in pos of last link pos
+      if j ~= 1 
+        A = pos(j-1,:); % Last joint in pos of last link pos
       end
 
       % Check if C (obstacle) is on AB
@@ -57,21 +57,21 @@ function [P_af, P_ap, contact, in_contact] = calc_projections(pos, k)
 
           %% Link j is in contact with the obstacle
           contact = true;
-          in_contact(link) = true;
+          in_contact(j) = true;
           num_contacts = num_contacts + 1;
           
           % Distance from joint to obstacle:
           l_to_obs = norm(AC);
-          q(n+2+link,k) = l_to_obs;
-          q(n+2+link,k) = l_to_obs;
-          q(n+2+link,k+1) = q(n+2+link,k); % To be used in finding tau_ext
+          q(n+2+j,k) = l_to_obs;
+          q(n+2+j,k) = l_to_obs;
+          q(n+2+j,k+1) = q(n+2+j,k); % To be used in finding tau_ext
           
           % Jacobian
           all_Jc = Jc_func(q(:,k)');
-          Jc(:,:,link) = all_Jc(:,:,link);
+          Jc(:,:,j) = all_Jc(:,:,j);
           
-          P_af = (pinv(Jc(:,:,link))*Jc(:,:,link))';
-          P_ap = eye(N) - pinv(Jc(:,:,link))*Jc(:,:,link);
+          P_af = (pinv(Jc(:,:,j))*Jc(:,:,j))';
+          P_ap = eye(N) - pinv(Jc(:,:,j))*Jc(:,:,j);
           
           S_P_af = [S_P_af P_af];
           S_P_ap = [S_P_ap P_ap];
@@ -89,8 +89,8 @@ function [P_af, P_ap, contact, in_contact] = calc_projections(pos, k)
 
       % Intersect of all P_ap
       P_ap = S_P_ap(:,1:N)*pinv(S_P_ap(:,1:N));
-      for i = 2:num_contacts
-          P_temp = S_P_ap(:,N*(i-1)+1:N*i);
+      for obs = 2:num_contacts
+          P_temp = S_P_ap(:,N*(obs-1)+1:N*obs);
           P_temp = P_temp*pinv(P_temp);
           P_ap = 2*(P_ap - P_ap*pinv(P_ap + P_temp)*P_ap);
       end

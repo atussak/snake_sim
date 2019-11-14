@@ -72,14 +72,16 @@ end
 
 K = sym('K', [1 n]);
 
-% Cartesian kinetic energy
-for i = 1:n
+for link = 1:n
    qd_tot = sym(0);
-   for j = 1:i % sum all joint velocities up until current joint to get absolute joint velocity
+   for j = 1:link % sum all joint velocities up until current joint
+               % to get absolute joint velocity
      qd_tot = qd_tot + Qd(j);
    end
    
-   K(i) = 0.5*m*(Xd(i)^2 + Yd(i)^2) + 0.5*l^2/12*m*qd_tot^2; % moment of inertia of rod: 1/12 * ml^2
+   % Sum of translational- and rotational kinetic energy for the link
+   % (moment of inertia of rod: 1/12 * ml^2)
+   K(link) = 0.5*m*(Xd(link)^2 + Yd(link)^2) + 0.5*l^2/12*m*qd_tot^2;
 end
 
 %% Euler Lagrange

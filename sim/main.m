@@ -71,8 +71,8 @@ for k = 1:Ns-1
   
   % Change trajectory
   if abs(error(4,k)) < 0.0001 && k > 1
-      q_ref(3) = pi/2;
-      q_ref(4) = pi/1.2;
+      q_ref(2) = -pi/6;
+      q_ref(4) = pi/2;
   end
   
   % Calculate error for the controller
