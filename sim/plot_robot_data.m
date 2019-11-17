@@ -2,11 +2,11 @@ function plot_robot_data(q, q_dot, q_dot_dot, pos, tauc, t)
 
     global n
     
-    plot_q    = false;
+    plot_q    = true;
     plot_qd   = false;
     plot_qdd  = false;
-    plot_pos  = false;
-    plot_tauc = true;
+    plot_pos  = true;
+    plot_tauc = false;
     
     q_legends   = '';
     qd_legends  = '';
