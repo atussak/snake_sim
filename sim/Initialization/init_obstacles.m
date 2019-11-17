@@ -9,17 +9,14 @@
 global obstacle_coords num_obstacles
 
 
-num_obstacles = 4;
+num_obstacles = 6;
 obstacle_coords = zeros(num_obstacles, 2);
 
-obstacle_coords(1,1) = 2.8;
-obstacle_coords(1,2) = 0.1;
-
-obstacle_coords(2,1) = 1.8;
-obstacle_coords(2,2) = 0.1;
-
-obstacle_coords(3,1) = 4;
-obstacle_coords(3,2) = -0.9;
-
-obstacle_coords(4,1) = 3.4;
-obstacle_coords(4,2) = -0.6;
+obstacle_coords = [2.8 0.1;
+                   1.8 0.1;
+                   3.4 -0.4;
+                   3.9 -1.5;
+                   3.5 -2.4;
+                   3.7 -3.2];
+               
+               
