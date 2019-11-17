@@ -1,0 +1,16 @@
+function phi = get_path_reference_angle(x, t)
+
+    x = x - 0.3;
+
+    if x <= 2
+        phi = 0;
+    elseif x <= 4
+        phi = -pi/4;
+    elseif x <= 6
+        phi = pi/4;
+    else
+        phi = 0;
+    end
+    
+
+end

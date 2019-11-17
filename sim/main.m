@@ -7,10 +7,10 @@ start = true; % For initializing visual simulator
 
 % Simulation variables
 h        = 0.01;             % sample time (s)
-simTime  = 100;              % simulation duration in seconds
+simTime  = 20;              % simulation duration in seconds
 Ns       = simTime/h;        % number of samples
 t        = zeros(1, Ns);     % array of simulation time steps
-                            % (updated in loop)
+                             % (updated in loop)
 
 % Allocate memory
 M           = zeros(N,N);
@@ -36,6 +36,9 @@ q_ref(4)  = -pi/2;
 
 % Assume no contact in the first iteration
 contact = false;
+
+bend_link = 4;
+part2 = false;
 
 
 %% Main simulation loop
@@ -70,11 +73,29 @@ for k = 1:Ns-1
   [P_af, P_ap, contact, in_contact] = calc_projections(pos, k);
   
   % Change trajectory
-  if abs(error(4,k)) < 0.0001 && k > 1
-      q_ref(2) = -pi/6;
-      q_ref(4) = pi/2;
+  if abs(error(bend_link,k)) < 0.001 && k > 1
+      if bend_link > 2 && ~part2
+          q_ref(bend_link-1) = -pi/2;
+          q_ref(bend_link) = 0;
+          bend_link = bend_link - 1;
+      else
+          q_ref(2) = 0;
+          part2 = true;
+          bend_link = 4;
+          q_ref(bend_link) = pi/2;
+      end
+%       if part2 && bend_link > 2
+%           q_ref(bend_link-1) = pi/4
+%           q_ref(bend_link) = 0;
+%           bend_link = bend_link - 1;
+%       end
   end
   
+%   for i = 2:n
+%       q_ref(i) = get_path_reference_angle(pos(i,1),t);
+%   end
+%   q_ref(n+1) = q_ref(n+1) + 0.0000001;
+%     q_ref
   % Calculate error for the controller
   error(:,k+1)    = q_ref - q(:,k);
   error(1,k+1)=0; error(n+1:N,k+1) = 0; % No error in unactuated joints
@@ -86,7 +107,7 @@ for k = 1:Ns-1
   visualize(pos, x0, y0);
 end
 
-% plot_robot_data(q, q_dot, q_dot_dot, head_pos, tau, t);
+plot_robot_data(q, q_d, q_dd, head_pos, tau, t);
 
 
 

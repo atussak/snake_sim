@@ -1,3 +1,7 @@
+addpath('Initialization')
+addpath('Control_functions')
+addpath('Modeling_functions')
+
 global n N q0 start q
 start = true; % For initializing visual simulator
 
@@ -6,7 +10,7 @@ h        = 0.01;             % sample time (s)
 simTime  = 100;              % simulation duration in seconds
 Ns       = simTime/h;        % number of samples
 t        = zeros(1, Ns);     % array of simulation time steps
-                            % (updated in loop)
+                             % (updated in loop)
 
 % Allocate memory
 M           = zeros(N,N);
@@ -67,13 +71,21 @@ for k = 1:Ns-1
   
   % Change trajectory
   if abs(error(4,k)) < 0.0001 && k > 1
-      q_ref(2) = pi/2;
-      q_ref(4) = pi/1.2;
+      q_ref(2) = -pi/6;
+      q_ref(4) = pi/2;
+      for i = 2:n
+%       q_ref(i) = get_path_reference_angle(pos(i,1),t);
+%   end
   end
   
+%   for i = 2:n
+%       q_ref(i) = get_path_reference_angle(pos(i,1),t);
+%   end
+%   q_ref(n+1) = q_ref(n+1) + 0.0000001;
+%     q_ref
   % Calculate error for the controller
   error(:,k+1)    = q_ref - q(:,k);
-  error(1,k+1)=0; error(n+1:N,k+1) = 0;
+  error(1,k+1)=0; error(n+1:N,k+1) = 0; % No error in unactuated joints
   error_d(:,k+1)  = (error(:,k+1)-error(:,k))/h;
   
   % Visualize robot
