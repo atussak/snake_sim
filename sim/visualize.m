@@ -15,10 +15,10 @@ function visualize(pos, x0, y0)
     global start obstacle_coords num_obstacles n
 
     % Scaling factor
-    s = 0.4;
+    s = 0.3;
     % Offset to move the origin of the coordinate frame
     ox = 2.5;
-    oy = 0.2;
+    oy = -2;
     
     if start
         start = false;
