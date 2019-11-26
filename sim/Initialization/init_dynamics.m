@@ -11,12 +11,6 @@ global n m l N
 global q qd qdd Q Qd Qdiff
 syms t
 
-% All virtual and real joints
-N = n + 2 + n; % n   : one joint per link
-               % + 2 : for the virtual x- and y-coordinates
-               % + n : length to every possible obstacle from last joint
-               %       (maximum one obstacle per link)
-
 Q       = sym('q'  , [1 N]); % time dependency specified
 q       = sym('q'  , [1 N]); % time dependency not specified
 Qd      = sym('qd' , [1 N]); % time dependency specified
