@@ -1,17 +1,15 @@
-function phi = get_path_reference_angle(x, t)
-
-    x = x - 0.3
-
-    if x <= 2
-        phi = 0;
-    elseif x <= 3
-        phi = -pi/2;
-    elseif x <= 3.5
-        phi = 0;
-    elseif x <= 3.8
-        phi = pi/4;
+function phi = get_path_reference_angle(sim_point, proj_point, old_phi)
+    sim_y = sim_point(2);
+    proj_y = proj_point(2);
+    
+    point_diff = sim_point - proj_point;
+    abs_point_diff = sqrt(point_diff*point_diff');
+    phi_diff = asin(abs_point_diff);
+    
+    if sim_y > proj_y
+        phi = old_phi - phi_diff;
     else
-        phi = 0;
+        phi = old_phi + phi_diff;
     end
     
 end

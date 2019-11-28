@@ -51,22 +51,21 @@ function visualize(pos, x0, y0)
         end
         
         plot(([0,2.5]-[ox,ox])*s, ([0,0]-[oy,oy])*s, 'r')
+        plot(([2.5,4.5]-[ox,ox])*s, ([0,-2]-[oy,oy])*s, 'r')
+        %plot(([5,7]-[ox,ox])*s, ([-2,-4]-[oy,oy])*s, 'r')
         %plot(([7,10]-[ox,ox])*s, ([-4,-4]-[oy,oy])*s, 'r')
         
-        x_curve = 2.5:0.01:4.5;
-        y_curve = zeros(1,length(x_curve));
-        for i = 1:length(x_curve)
-            y_curve(i) = (sqrt(4 - (x_curve(i)-2.5)^2) - 2-oy)*s;
-        end
-        x_curve = (x_curve - ox)*s;
         
-        plot(x_curve, y_curve, 'r');
-
+        x_curve = 2.5:0.01:4.5;
+        x_curve = (x_curve - ox)*s;
+        y_curve = zeros();
+        for i = 1:length(x_curve)
+            y_curve(i) = sqrt(4 - (x_curve-2.5)^2) - 2
+        end
         hold off;
         axis equal; axis off;
         set(gca,'Drawmode','Fast','NextPlot','ReplaceChildren');
         axis([-a a -a a]);
-
         
     else
         

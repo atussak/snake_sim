@@ -72,35 +72,44 @@ for k = 1:Ns-1
   % Calculate projection matrices
   [P_af, P_ap, contact, in_contact] = calc_projections(pos, k);
   
-  % Change trajectory
-  if abs(error(bend_link,k)) < 0.001 && k > 1
-      if bend_link > 2 && ~part2
-          q_ref(bend_link-1) = -pi/2;
-          q_ref(bend_link) = 0;
-          bend_link = bend_link - 1;
-      else
-          q_ref(2) = 0;
-          part2 = true;
-          bend_link = 4;
-          q_ref(bend_link) = pi/2;
-      end
-%       if part2 && bend_link > 2
-%           q_ref(bend_link-1) = pi/4
+%   % Change trajectory
+%   if abs(error(bend_link,k)) < 0.001 && k > 1
+%       if bend_link > 2 && ~part2
+%           q_ref(bend_link-1) = -pi/2;
 %           q_ref(bend_link) = 0;
 %           bend_link = bend_link - 1;
+%       else
+%           q_ref(2) = 0;
+%           part2 = true;
+%           bend_link = 4;
+%           q_ref(bend_link) = pi/2;
 %       end
-  end
+% %       if part2 && bend_link > 2
+% %           q_ref(bend_link-1) = pi/4
+% %           q_ref(bend_link) = 0;
+% %           bend_link = bend_link - 1;
+% %       end
+%   end
   
 %   for i = 2:n
 %       q_ref(i) = get_path_reference_angle(pos(i,1),t);
 %   end
 %   q_ref(n+1) = q_ref(n+1) + 0.0000001;
 %     q_ref
+
+    proj_points = zeros(4,2);
+    for i = 3:n
+       proj_point = get_point_on_path(pos(i,:));
+       q_ref(i) = get_path_reference_angle(pos(i,:), proj_point, q(i,k));
+        proj_points(i,:) = proj_point;
+    end
+    proj_points;
+    q_ref;
   % Calculate error for the controller
   error(:,k+1)    = q_ref - q(:,k);
   error(1,k+1)=0; error(n+1:N,k+1) = 0; % No error in unactuated joints
   error_d(:,k+1)  = (error(:,k+1)-error(:,k))/h;
-  
+  error(1:4,k+1)
   % Visualize robot
   x0 = q(n+1,k);
   y0 = q(n+2,k);

@@ -11,7 +11,7 @@ function tau_control = computed_torque_control(M, C, error, error_d)
     
     % Controller gains
     kd = 0.8;
-    kp = 0.5;
+    kp = 0.9;
     
     tau_control = M*(qdd_ref + kd*error_d + kp*error) + C;
     
