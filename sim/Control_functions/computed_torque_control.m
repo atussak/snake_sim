@@ -14,7 +14,7 @@ function tau_control = computed_torque_control(M, C, error, error_d)
     kp = 0.5;
     
     tau_control = M*(qdd_ref + kd*error_d + kp*error) + C;
-    
+        
     % Saturate control torque
     % Both for restricting torque to actuated joints
     % and for limiting the magnitude.

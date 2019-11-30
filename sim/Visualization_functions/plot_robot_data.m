@@ -1,17 +1,19 @@
-function plot_robot_data(q, q_dot, q_dot_dot, pos, tauc, t)
+function plot_robot_data(q, q_dot, q_dot_dot, q_ref, pos, tauc, t)
 
     global n
     
-    plot_q    = true;
-    plot_qd   = false;
-    plot_qdd  = false;
-    plot_pos  = true;
-    plot_tauc = false;
+    plot_q      = true;
+    plot_qd     = false;
+    plot_qdd    = false;
+    plot_pos    = true;
+    plot_tauc   = false;
+    plot_q_ref  = true;
     
-    q_legends   = '';
-    qd_legends  = '';
-    qdd_legends = '';
-    tau_legends = '';
+    q_legends       = '';
+    qd_legends      = '';
+    qdd_legends     = '';
+    tau_legends     = '';
+    q_ref_legends   = '';
     
     % End effector position
     if plot_pos
@@ -36,6 +38,20 @@ function plot_robot_data(q, q_dot, q_dot_dot, pos, tauc, t)
         end
         legend(q_legends)
         title('Joint angles')
+    end
+    
+    % Joint references
+    if plot_q_ref
+        figure
+        hold on
+        grid on
+        for i = 1:n
+            plot(t, q_ref(i,:));
+            legend_name = strcat('q_{ref}', int2str(i));
+            q_ref_legends = [q_ref_legends; legend_name];
+        end
+        legend(q_ref_legends)
+        title('Joint references')
     end
     
     % Joint velocities

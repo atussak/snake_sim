@@ -17,7 +17,7 @@ function visualize(pos, x0, y0)
     % Scaling factor
     s = 0.3;
     % Offset to move the origin of the coordinate frame
-    ox = 2.5;
+    ox = 3.3;
     oy = -2;
     
     if start
@@ -40,28 +40,31 @@ function visualize(pos, x0, y0)
         a = 1;
         ocx = ox*s*10;
         ocy = oy*s*10;
-        plot([0-ocx 1-ocx]*0.1*a,[0-ocy 0-ocy]*0.1*a,'r');     % base frame (x-axis)
-        plot([0-ocx 0-ocx]*0.1*a,[0-ocy 1-ocy]*0.1*a,'g');     % base frame (y-axis)
+        plot([0-ocx 1-ocx]*0.1*a,[0-ocy 0-ocy]*0.1*a,'r'); % base frame (x-axis)
+        plot([0-ocx 0-ocx]*0.1*a,[0-ocy 1-ocy]*0.1*a,'g'); % base frame (y-axis)
         
         % Draw obstacles
+        th = 0:pi/50:2*pi;
+        r = 0.1;
         for i = 1:num_obstacles
            x_obs = obstacle_coords(i,1)-ox;
            y_obs = obstacle_coords(i,2)-oy;
-           plot(x_obs*s, y_obs*s, '^r', 'MarkerFaceColor','r') 
+           xunit = r * cos(th) + x_obs;
+           yunit = r * sin(th) + y_obs;
+           plot(xunit*s, yunit*s, 'r');
         end
         
-        plot(([0,2.5]-[ox,ox])*s, ([0,0]-[oy,oy])*s, 'r')
-        %plot(([7,10]-[ox,ox])*s, ([-4,-4]-[oy,oy])*s, 'r')
         
-        x_curve = 2.5:0.01:4.5;
-        y_curve = zeros(1,length(x_curve));
-        for i = 1:length(x_curve)
-            y_curve(i) = (sqrt(4 - (x_curve(i)-2.5)^2) - 2-oy)*s;
+        % Draw desired trajectory
+        orange = [1 0.498 0.3137];
+        plot(([0,2.2]-[ox,ox])*s, ([0,0]-[oy,oy])*s, 'color', orange)
+        plot(([6.2,10]-[ox,ox])*s, ([-4,-4]-[oy,oy])*s, 'color', orange) 
+        [num_curves, curve_data, data_size] = get_curve_data(ox, oy, s);
+        for i = 1:num_curves
+            plot(curve_data(i,1:data_size), curve_data(i,data_size+1:data_size*2), 'color', orange);
         end
-        x_curve = (x_curve - ox)*s;
-        
-        plot(x_curve, y_curve, 'r');
 
+        % Draw settings
         hold off;
         axis equal; axis off;
         set(gca,'Drawmode','Fast','NextPlot','ReplaceChildren');

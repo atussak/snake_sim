@@ -93,7 +93,7 @@ for k = 1:Ns-1
   error(1,k+1)=0; error(n+1:N,k+1) = 0; % No error in unactuated joints
   error_d(:,k+1)  = (error(:,k+1)-error(:,k))/h;
   
-  error(1:n,k+1)
+  error(1:n,k+1);
   
   % Visualize robot
   x0 = q(n+1,k);
