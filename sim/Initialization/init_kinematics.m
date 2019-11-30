@@ -17,7 +17,7 @@ D_0(2,4) = q(n+2);
 
 T = T*D_0;
 
-for i = 1:n
+for i = 1:n % link number
     R = [cos(q(i)) -sin(q(i)) 0 0;
          sin(q(i))  cos(q(i)) 0 0;
          0          0         1 0;

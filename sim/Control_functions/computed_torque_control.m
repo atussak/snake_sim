@@ -5,13 +5,9 @@ function tau_control = computed_torque_control(M, C, error, error_d)
     % values and the time derivative of the error.
     % --------------------------------------------------------
 
-    global N
+    global N kp kd
     
     qdd_ref = zeros(N,1);
-    
-    % Controller gains
-    kd = 1.8;
-    kp = 0.5;
     
     tau_control = M*(qdd_ref + kd*error_d + kp*error) + C;
         

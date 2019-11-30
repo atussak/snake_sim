@@ -2,7 +2,7 @@ clear
 
 init_obstacles
 init_snake
-
+init_control
 init_dynamics
 init_kinematics
 init_contact_jacobians

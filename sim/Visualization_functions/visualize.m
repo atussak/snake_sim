@@ -12,7 +12,7 @@
 function visualize(pos, x0, y0)
 
     persistent p
-    global start obstacle_coords num_obstacles n
+    global start obstacle_coords num_obstacles n obstacle_radius
 
     % Scaling factor
     s = 0.3;
@@ -45,7 +45,7 @@ function visualize(pos, x0, y0)
         
         % Draw obstacles
         th = 0:pi/50:2*pi;
-        r = 0.1;
+        r = obstacle_radius;
         for i = 1:num_obstacles
            x_obs = obstacle_coords(i,1)-ox;
            y_obs = obstacle_coords(i,2)-oy;

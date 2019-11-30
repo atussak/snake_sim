@@ -6,10 +6,11 @@
 % --------------------------------------------------------
 
 
-global obstacle_coords num_obstacles
+global obstacle_coords num_obstacles obstacle_radius
 
 
 num_obstacles = 6;
+obstacle_radius = 0.1;
 obstacle_coords = zeros(num_obstacles, 2);
 
 obstacle_coords = [

@@ -10,7 +10,7 @@ function [P_af, P_ap, contact, in_contact] = calc_projections(pos, k)
     % --------------------------------------------------------
     
     
-  global n N num_obstacles obstacle_coords Jc_func q
+  global n N num_obstacles obstacle_coords Jc_func q obstacle_radius
   
   contact = false;
   num_contacts = 0;
@@ -50,7 +50,7 @@ function [P_af, P_ap, contact, in_contact] = calc_projections(pos, k)
       ABxAC = AB(1)*AC(2) - AB(2)*AC(1);
       
       % if AB AC is aligned
-      if abs(ABxAC) < 0.1      % if C is between A and B
+      if abs(ABxAC) < obstacle_radius      % if C is between A and B
         k_AC = dot(AB, AC);
         k_AB = dot(AB, AB);
         if k_AC >= 0 && k_AC <= k_AB

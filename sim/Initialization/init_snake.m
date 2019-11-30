@@ -8,7 +8,7 @@ global n N l m q0
 
 
 % Number of links
-n = 5;
+n = 3;
 
 % All virtual and real joints
 N = n + 2 + n; % n   : one joint per link
@@ -24,13 +24,3 @@ l = 1;
 
 % Initial joint positions and virtual variable values
 q0    = zeros(N,1);
-
-
-% --------------------------------------------------------
-% Control
-% --------------------------------------------------------
-
-global max_tau
-
-% For torque control
-max_tau = 1;
