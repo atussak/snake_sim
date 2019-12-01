@@ -7,7 +7,7 @@
 global kp kd max_tau
 
 % Controller gains
-kp = 0.5;
+kp = 0.8;
 kd = 1.8;
 
 % Torque saturation value

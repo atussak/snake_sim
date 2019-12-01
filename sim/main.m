@@ -7,11 +7,11 @@ global n N q0 start q
 start = true; % For initializing visual simulator
 
 % Simulation variables
-h        = 0.01;             % sample time (s)
-simTime  = 20;              % simulation duration in seconds
-Ns       = simTime/h;        % number of samples
-t        = zeros(1, Ns);     % array of simulation time steps
-                             % (updated in loop)
+h        = 0.01;            % sample time (s)
+simTime  = 60;              % simulation duration in seconds
+Ns       = simTime/h;       % number of samples
+t        = zeros(1, Ns);    % array of simulation time steps
+                            % (updated in loop)
 
 % Allocate memory
 M           = zeros(N,N);
@@ -89,9 +89,8 @@ for k = 1:Ns-1
   q_ref(1:n, k);
   
   % Calculate error for the controller
-  error(:,k+1)    = q_ref(:,k) - q(:,k);
-  error(1,k+1)=0; error(n+1:N,k+1) = 0; % No error in unactuated joints
-  error_d(:,k+1)  = (error(:,k+1)-error(:,k))/h;
+  error(2:n,k+1)    = q_ref(2:n,k) - q(2:n,k); % No error in unactuated joints
+  error_d(2:n,k+1)  = -q_d(2:n,k+1);%(error(:,k+1)-error(:,k))/h;
   
   error(1:n,k+1);
   
@@ -101,7 +100,7 @@ for k = 1:Ns-1
   visualize(pos, x0, y0);
 end
 
-plot_robot_data(q, q_d, q_dd, q_ref, head_pos, tau, t);
+plot_robot_data(q, q_d, q_dd, q_ref, head_pos, tau, error, t);
 
 
 

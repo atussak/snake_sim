@@ -25,33 +25,35 @@ function plot_robot_data(q, q_dot, q_dot_dot, q_ref, pos, tauc, error, t)
         hold on
         pos(:,end) = [];
         plot(pos(1,:), pos(2,:))
-        axis([3 5 -2 0])
-        title('Head  position')
+        start = min(min(pos));
+        stop = max(max(pos));
+        axis([start stop start stop])
+        title('Head position')
         xlabel('x')
         ylabel('y')
         % Draw desired trajectory
         orange = [1 0.498 0.3137];
-        plot([0,2.2], [0,0], 'color', orange)
-        plot([6.2,10], [-4,-4], 'color', orange) 
-        [num_curves, curve_data, data_size] = get_curve_data(0, 0, 1);
+        plot([0,2.2], ([0,0]-[oy,oy])*s, 'color', orange)
+        plot(([6.2,10]-[ox,ox])*s, ([-4,-4]-[oy,oy])*s, 'color', orange) 
+        [num_curves, curve_data, data_size] = get_curve_data(ox, oy, s);
         for i = 1:num_curves
             plot(curve_data(i,1:data_size), curve_data(i,data_size+1:data_size*2), 'color', orange);
         end
         
-%         figure
-%         hold on
-%         % y position
-%         subplot(1,2,1)
-%         grid on
-%         plot(t(1:length(t)-1), pos(2,:));
-%         legend('y')
-%         title('Head y position')
-%         % x position
-%         subplot(1,2,2)
-%         grid on
-%         plot(t(1:length(t)-1), pos(1,:));
-%         legend('y')
-%         title('Head x position')
+        figure
+        hold on
+        % y position
+        subplot(1,2,1)
+        grid on
+        plot(t(1:length(t)-1), pos(2,:));
+        legend('y')
+        title('Head y position')
+        % x position
+        subplot(1,2,2)
+        grid on
+        plot(t(1:length(t)-1), pos(1,:));
+        legend('y')
+        title('Head x position')
     end
     
     % Joint angles
