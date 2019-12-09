@@ -7,8 +7,8 @@ global n N q0 start q
 start = true; % For initializing visual simulator
 
 % Simulation variables
-h        = 0.01;            % sample time (s)
-simTime  = 60;              % simulation duration in seconds
+h        = 0.001;            % sample time (s)
+simTime  = 30;              % simulation duration in seconds
 Ns       = simTime/h;       % number of samples
 t        = zeros(1, Ns);    % array of simulation time steps
                             % (updated in loop)
@@ -34,6 +34,7 @@ q(:,1)      = q0;
 
 % Reference values
 q_ref(:,1)  = q0;
+q_ref(4,:)  = -pi/2;
 
 % Assume no contact in the first iteration
 contact = false;
@@ -74,26 +75,22 @@ for k = 1:Ns-1
   [P_af, P_ap, contact, in_contact] = calc_projections(pos, k);
 
   
-  proj_points = zeros(4,2);
-  for i = 2:n
-     proj_point = get_point_on_path(pos(i,:));
-     curr_q = q(i,k);
-     if i == 2
-        curr_q = curr_q + q(1,k); 
-     end
-     q_ref(i,k+1) = get_path_reference_angle2(pos(i-1,:), pos(i,:), proj_point, curr_q);
-     proj_points(i,:) = proj_point;
-  end
+%   proj_points = zeros(4,2);
+%   for i = 2:n
+%      proj_point = get_point_on_path(pos(i,:));
+%      curr_q = q(i,k);
+%      if i == 2
+%         curr_q = curr_q + q(1,k); 
+%      end
+%      q_ref(i,k+1) = get_path_reference_angle2(pos(i-1,:), pos(i,:), proj_point, curr_q);
+%      proj_points(i,:) = proj_point;
+%   end
   
-  proj_points;
-  q_ref(1:n, k);
   
   % Calculate error for the controller
   error(2:n,k+1)    = q_ref(2:n,k) - q(2:n,k); % No error in unactuated joints
-  error_d(2:n,k+1)  = -q_d(2:n,k+1);%(error(:,k+1)-error(:,k))/h;
-  
-  error(1:n,k+1);
-  
+  error_d(2:n,k+1)  = -q_d(2:n,k+1);
+    
   % Visualize robot
   x0 = q(n+1,k);
   y0 = q(n+2,k);
@@ -102,7 +99,31 @@ end
 
 plot_robot_data(q, q_d, q_dd, q_ref, head_pos, tau, error, t);
 
+figure
 
+subplot(2,1,1);
+hold on
+plot(t, q(1,:));
+plot(t, q(2,:));
+plot(t, q(3,:));
+plot(t, q(4,:));
+legend('$q_1$', '$q_2$', '$q_3$', '$q_4$','Interpreter','latex')
+title('Joint angles')
+xlabel('$s$','Interpreter','latex')
+ylabel('$rad$','Interpreter','latex')
+hold off
 
+subplot(2,1,2); 
+y2 = sin(5*x);
+hold on
+plot(t, q_d(1,:));
+plot(t, q_d(2,:));
+plot(t, q_d(3,:));
+plot(t, q_d(4,:));
+legend('$\dot{q_1}$', '$\dot{q_2}$', '$\dot{q_3}$', '$\dot{q_4}$','Interpreter','latex')
+title('Joint velocities')
+xlabel('$s$','Interpreter','latex')
+ylabel('$rad/t$','Interpreter','latex')
+hold off
 
 

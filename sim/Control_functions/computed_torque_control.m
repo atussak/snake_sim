@@ -1,4 +1,4 @@
-function tau_control = computed_torque_control(M, C, error, error_d)
+function tau_control = computed_torque_control(M, C, q_e, qd_e)
 
     % --------------------------------------------------------
     % Calculate the control torque based on the error in joint
@@ -9,9 +9,7 @@ function tau_control = computed_torque_control(M, C, error, error_d)
     
     qdd_ref = zeros(N,1);
     
-    tau_control = M*(qdd_ref + kd*error_d + kp*error) + C;
-    
-    %tau_control(4) = tau_control(4) - 0.02;
+    tau_control = M*(qdd_ref + kd*qd_e + kp*q_e) + C;    
     
     % Saturate control torque
     % Both for restricting torque to actuated joints

@@ -8,7 +8,7 @@ global n N l m q0
 
 
 % Number of links
-n = 3;
+n = 4;
 
 % All virtual and real joints
 N = n + 2 + n; % n   : one joint per link

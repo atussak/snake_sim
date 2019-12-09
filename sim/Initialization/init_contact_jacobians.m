@@ -27,10 +27,33 @@ for link = 1:n % For every link an obstacle can be in contact with
   for curr_link = 1:link-1
      T = T*Rz_func(q(curr_link))*D_func(l,0);
   end
-  T = T*Rz_func(q(link))*D_func(q(n+2+link));
+  T = T*Rz_func(q(link))*D_func(q(n+2+link),0);
   x = T(1,4);
   y = T(2,4);
+  
+  x = simplify(x);
+  y = simplify(y);
+  
+    % Start at tail position
+  x = q(n+1);
+  y = q(n+2);
 
+  % Add x- and y distance from the links from tail to contact point
+  for i = 1:link
+    q_temp = sym(0);
+    for k = 1:i
+       q_temp = q_temp + q(k); 
+    end
+    if i == link % The link in contact is reached
+      x = x + q(n+2+link)*cos(q_temp);
+      y = y + q(n+2+link)*sin(q_temp);
+    else
+      x = x + l*cos(q_temp);
+      y = y + l*sin(q_temp);
+    end
+  end
+  
+  
   % Differentiate wrt. the generalized coordinates
   for i = 1:N
     Jc(1,i) = diff(x, q(i));

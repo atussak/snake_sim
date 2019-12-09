@@ -73,6 +73,7 @@ function [P_af, P_ap, contact, in_contact] = calc_projections(pos, k)
           P_af = (pinv(Jc(:,:,link))*Jc(:,:,link))';
           P_ap = eye(N) - pinv(Jc(:,:,link))*Jc(:,:,link);
           
+          % Stack projection matrices
           S_P_af = [S_P_af P_af];
           S_P_ap = [S_P_ap P_ap];
         end
