@@ -5,7 +5,7 @@ function plot_robot_data(q, q_dot, q_dot_dot, q_ref, pos, tauc, error, t)
     plot_q      = 0;
     plot_qd     = 0;
     plot_qdd    = 0;
-    plot_pos    = 0;
+    plot_pos    = 1;
     plot_tauc   = 0;
     plot_q_ref  = 0;
     plot_error  = 0;
@@ -21,7 +21,7 @@ function plot_robot_data(q, q_dot, q_dot_dot, q_ref, pos, tauc, error, t)
     
     if plot_pos
         figure
-        grid on
+%         grid on
         hold on
         pos(:,end) = [];
         plot(pos(1,:), pos(2,:))
@@ -38,20 +38,20 @@ function plot_robot_data(q, q_dot, q_dot_dot, q_ref, pos, tauc, error, t)
             plot(curve_data(i,1:data_size), curve_data(i,data_size+1:data_size*2), 'color', orange);
         end
         
-        figure
-        hold on
-        % y position
-        subplot(1,2,1)
-        grid on
-        plot(t(1:length(t)-1), pos(2,:));
-        legend('y')
-        title('Head y position')
-        % x position
-        subplot(1,2,2)
-        grid on
-        plot(t(1:length(t)-1), pos(1,:));
-        legend('y')
-        title('Head x position')
+%         figure
+%         hold on
+%         % y position
+%         subplot(1,2,1)
+%         grid on
+%         plot(t(1:length(t)-1), pos(2,:));
+%         legend('y')
+%         title('Head y position')
+%         % x position
+%         subplot(1,2,2)
+%         grid on
+%         plot(t(1:length(t)-1), pos(1,:));
+%         legend('y')
+%         title('Head x position')
     end
     
     % Joint angles

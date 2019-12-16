@@ -44,7 +44,7 @@ for link = 1:n
       end
       if j == link % To get to the center of mass (middle) of the link
           X(link) = X(link) + (l/2)*cos(q_temp);
-          Y(link) = Y(link) + (l/2)*cos(q_temp);
+          Y(link) = Y(link) + (l/2)*sin(q_temp);
       else
           X(link) = X(link) + l*cos(q_temp);
           Y(link) = Y(link) + l*sin(q_temp);

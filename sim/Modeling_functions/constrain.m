@@ -13,7 +13,7 @@ function [q, q_d, q_dd] = constrain(q_sim, q_d_sim, q_dd_sim)
     q_dd    = q_dd_sim;
     
     for i = 2:n
-        % Links can't cross each other
+        % Links can not cross each other
         % Note: first link and virtual links aren't limited
         if q_sim(i) > pi || q_sim(i) < -pi
             q(i) = pi*sign(q_sim(i));

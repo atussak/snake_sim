@@ -1,4 +1,4 @@
-function q_ref = get_path_reference_angle2(prev_point, point, proj_point, q_sim)
+function q_ref = get_path_reference_angle2(prev_point, point, proj_point, q_sim, linknum)
 
     a = proj_point - point;
     a = sqrt(a*a');
@@ -6,8 +6,8 @@ function q_ref = get_path_reference_angle2(prev_point, point, proj_point, q_sim)
     if a < 0.001
         q_ref = q_sim;
         return
-    end
-
+    end    
+    
     b = prev_point - point;
     b = sqrt(b*b');
     
@@ -37,8 +37,13 @@ function q_ref = get_path_reference_angle2(prev_point, point, proj_point, q_sim)
         
         if dist < best_dist
             best_dist = dist;
-            q_ref = q_sim + phi/2;
+            q_ref = q_sim + phi;
+            if linknum == 1
+               q_ref = phi;
+            end
         end
     end
+    
+    
     
 end
