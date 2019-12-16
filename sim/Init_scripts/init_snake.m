@@ -24,5 +24,5 @@ l = 1;
 
 % Initial joint positions and virtual variable values
 q0    = zeros(N,1);
-q0(n+1) = 0;
-q0(n+2) = 0;
+q0(n+1) = 0; % x position
+q0(n+2) = 0; % y position

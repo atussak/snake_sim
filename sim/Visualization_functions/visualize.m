@@ -1,7 +1,7 @@
 
 % --------------------------------------------------------
 % This function takes care of the visual simulation of the
-% 2D snake robot as well as the obstacles.
+% 2D snake robot as well as the obstacles ant path.
 % For every time it is called, it deletes old drawings of
 % links and replaces them with updated ones.
 % The obstacles and the world frame illustration will just
@@ -15,8 +15,9 @@ function visualize(pos, x0, y0, proj_points, t)
     global start obstacle_coords num_obstacles n obstacle_radius
     global curve section_partition num_sections
 
+    % Configuration for size and position of snake robot in window
     % Scaling factor
-    s = 0.4;%0.28;
+    s = 0.4;
     % Offset to move the origin of the coordinate frame
     ox = 1.7;
     oy = -0.5;
@@ -121,68 +122,7 @@ function visualize(pos, x0, y0, proj_points, t)
         for i = 1:n
             set(pp(i),'xdata',[c(i,1) d(i,1)],'ydata',[c(i,2) d(i,2)]);
         end
-%         
+        
         %%
         drawnow;
-%         if t > 0 && t < 0.01
-%             saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\sim_1\sim1.png')
-%         elseif t > 4 && t < 4.01
-%             saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\sim_1\sim2.png')
-%         elseif t > 8 && t < 8.01
-%             saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\sim_1\sim3.png')
-%         elseif t > 12 && t < 12.01
-%             saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\sim_1\sim4.png')
-%         elseif t > 16 && t < 16.01
-%             saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\sim_1\sim5.png')
-%         elseif t > 19.9 && t < 20
-%             saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\sim_1\sim6.png')
-%         end
-
-%     if t > 0 && t < 0.1
-%         saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\sim_3\sim1.png')
-%     elseif t > 20 && t < 20.1
-%         saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\sim_3\sim2.png')
-%     elseif t > 40 && t < 40.1
-%         saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\sim_3\sim3.png')
-%     elseif t > 60 && t < 60.1
-%         saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\sim_3\sim4.png')
-%     elseif t > 80 && t < 80.1
-%         saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\sim_3\sim5.png')
-%     elseif t > 100 && t < 100.1
-%         saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\sim_3\sim6.png')
-%     elseif t > 120 && t < 120.1
-%         saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\sim_3\sim7.png')
-%     elseif t > 139.9 && t < 140
-%         saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\sim_3\sim8.png')
-%     end
-% 
-%     if t > 0 && t < 0.1
-%         saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\sim_4\sim1.png')
-%     elseif t > 20 && t < 20.1
-%         saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\sim_4\sim2.png')
-%     elseif t > 40 && t < 40.1
-%         saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\sim_4\sim3.png')
-%     elseif t > 60 && t < 60.1
-%         saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\sim_4\sim4.png')
-%     elseif t > 80 && t < 80.1
-%         saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\sim_4\sim5.png')
-%     elseif t > 100 && t < 100.1
-%         saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\sim_4\sim6.png')
-%     elseif t > 120 && t < 120.1
-%         saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\sim_4\sim7.png')
-%     elseif t > 139.9 && t < 140
-%         saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\sim_4\sim8.png')
-%     end
-% 
-        if t > 0 && t < 0.01
-            print_figure(gcf, 'badgirl1')
-            saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\reg_2b\goodgirl1.png')
-        elseif t > 5 && t < 5.01
-            print_figure(gcf, 'badgirl2')
-            saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\reg_2b\goodgirl2.png')
-        elseif t > 9.99 && t < 10
-            print_figure(gcf, 'badgirl3')
-            saveas(gcf,'C:\Users\atussak\Documents\Prosjekt\figures\reg_2b\goodgirl3.png')
-        end
-
 end

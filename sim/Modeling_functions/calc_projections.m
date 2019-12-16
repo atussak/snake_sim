@@ -10,7 +10,7 @@ function [P_af, P_ap, contact, in_contact] = calc_projections(pos, k)
     % --------------------------------------------------------
     
     
-  global n N num_obstacles obstacle_coords Jc_func q obstacle_radius
+  global n N l num_obstacles obstacle_coords Jc_func q obstacle_radius
   
   contact = false;
   num_contacts = 0;
@@ -38,7 +38,7 @@ function [P_af, P_ap, contact, in_contact] = calc_projections(pos, k)
     for link = 1:n
       % Link line segment A-B
       B = pos(link,:);
-      A = [q(n+1,k) q(n+2,k)]; % Last joint in origin if first link
+      A = [q(n+1,k) q(n+2,k)]; % Last joint in tail pos if first link
       if link ~= 1 
         A = pos(link-1,:); % Last joint in pos of last link pos
       end
@@ -46,26 +46,32 @@ function [P_af, P_ap, contact, in_contact] = calc_projections(pos, k)
       % Check if C (obstacle) is on AB
       AB = B - A;
       AC = C - A;
-
-      ABxAC = AB(1)*AC(2) - AB(2)*AC(1);
+      BC = C - B;
       
-      % if AB AC is aligned
-      if abs(ABxAC) < obstacle_radius      % if C is between A and B
-        k_AC = dot(AB, AC);
-        k_AB = dot(AB, AB);
-        if k_AC >= 0 && k_AC <= k_AB
+      ab = l;
+      ac = sqrt(AC*AC');
+      bc = sqrt(BC*BC');
 
+      cos_theta = (ab^2 + ac^2 - bc^2)/(2*ab*ac);
+      
+      ap = ac/abs(cos_theta);
+      
+      %Calculate distance from obstacle to proj point
+      
+      AP = AB*ap/l;
+      P = A + AP;
+      CP = P - C;
+      cp = sqrt(CP*CP');
+      
+      if ap < l && cp < obstacle_radius %contact
           %% Link j is in contact with the obstacle
           contact = true;
           in_contact(link) = true;
           num_contacts = num_contacts + 1;
           
-          % Distance from joint to obstacle:
-          l_to_obs = norm(AC);
-          q(n+2+link,k) = l_to_obs;
-          q(n+2+link,k) = l_to_obs;
-          q(n+2+link,k+1) = q(n+2+link,k); % To be used in finding tau_ext
-          
+          % Distance from joint to obstacle point projection:
+          l_to_obs = ap;
+          q(n+2+link,k) = l_to_obs;          
           % Jacobian
           all_Jc = Jc_func(q(:,k)');
           Jc(:,:,link) = all_Jc(:,:,link);
@@ -76,14 +82,13 @@ function [P_af, P_ap, contact, in_contact] = calc_projections(pos, k)
           % Stack projection matrices
           S_P_af = [S_P_af P_af];
           S_P_ap = [S_P_ap P_ap];
-        end
       end
+      
+      
     end
 
   end
-  
-  num_contacts;
-  
+    
   if contact
       % Union of all P_af
       P_af = S_P_af*pinv(S_P_af);

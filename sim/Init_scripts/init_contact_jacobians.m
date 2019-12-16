@@ -53,7 +53,6 @@ for link = 1:n % For every link an obstacle can be in contact with
     end
   end
   
-  
   % Differentiate wrt. the generalized coordinates
   for i = 1:N
     Jc(1,i) = diff(x, q(i));

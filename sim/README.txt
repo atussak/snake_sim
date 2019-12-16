@@ -1,14 +1,16 @@
 
 Simulator for a simple 2D snake robot interacting with point-shaped
-obstacles on a flat surface.
+obstacles on a flat surface while adjusting to a given path.
+Made for the specialization project in the cybernetics and robotics study.
 
 Author: Atussa Koushan, NTNU
-Last changed: 13.11.2019
+Last changed: 16.12.2019
+
 ------------------------------------------------------------------------
 
-To change the specifications for the robot, go to the init_snake.m file.
-To change the specifications for the obstacles, go to the init_obstacles
-file.
+All simulator configurations can be changed in the init scripts found in
+the folder Init_scripts. Further explanation is given in the respective
+files.
 
 
 Running the simulator:
@@ -16,14 +18,10 @@ Running the simulator:
 1. Run initialization.m
 2. Run main.m
 
-- If the obstacle specifications are changed, it is sufficient to re-run
-  init_obstacles.m.
-- If the snake specifications are changed, initialization.m has to be 
-  re-run.
+If the dynamical properties of the snake are changed, initialization.m
+has to be re-run. Else it is sufficient to re-run the modified script.
 
+------------------------------------------------------------------------
 
-Model assumptions:
-
-- The model assumes that the robot can be in contact with maximum one
-  obstacle per link.
-- The model assumes that the length and mass of every link is the same.
+For more information about the model, assumptions and purpose of the
+simulator, see the project report.
