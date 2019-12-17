@@ -4,7 +4,12 @@ obstacles on a flat surface while adjusting to a given path.
 Made for the specialization project in the cybernetics and robotics study.
 
 Author: Atussa Koushan, NTNU
-Last changed: 16.12.2019
+Last changed: 17.12.2019
+
+------------------------------------------------------------------------
+
+Dependencies:
+    - Symbolic Math Toolbox
 
 ------------------------------------------------------------------------
 

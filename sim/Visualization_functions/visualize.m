@@ -125,4 +125,5 @@ function visualize(pos, x0, y0, proj_points, t)
         
         %%
         drawnow;
+        
 end

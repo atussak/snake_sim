@@ -3,8 +3,8 @@ global n N q0 start q
 start = true; % For initializing visual simulator
 
 % Simulation variables
-h        = 0.01;            % sample time (s)
-simTime  = 100;             % simulation duration in seconds
+h        = 0.001;            % sample time (s)
+simTime  = 20;             % simulation duration in seconds
 Ns       = simTime/h;       % number of samples
 t        = zeros(1, Ns);    % array of simulation time steps
                             % (updated in loop)
@@ -22,17 +22,17 @@ error_d     = zeros(N,Ns);
 in_contact  = zeros(1,n);
 P_af        = zeros(N,N);
 P_ap        = zeros(N,N);
-
+pos         = zeros(n,2);
+mid_pos     = zeros(n,2);
 head_pos    = zeros(2,Ns); % For plotting
+energy      = zeros(1,Ns);
+momentum    = zeros(2,Ns);
 
 % Initial values
 q(:,1)      = q0;
 
 % Assume no contact in the first iteration
 contact = false;
-
-bend_link = 4;
-part2 = false;
 
 
 %% Main simulation loop
@@ -60,11 +60,20 @@ for k = 1:Ns-1
   q(:,k+1)         = q(:,k) + q_d(:,k)*h;
   
   % Calculate link cartesian coordinates
-  pos = kinematics(q(:,k));
+  last_mid_pos = mid_pos;
+  mid_pos = calculate_mid_pos(q(:,k)); 
+  pos = calculate_pos(q(:,k));
   head_pos(:,k) = pos(n,:)';
+
+  
+  % Calculate velocity and momentum
+  vel = (mid_pos - last_mid_pos)./h;
+  for i = 1:n
+     momentum(:,k) = momentum(:,k) + m*vel(i,:)';
+  end
   
   % Calculate projection matrices
-  [P_af, P_ap, contact, in_contact] = calc_projections(pos, k);
+  [P_af, P_ap, contact, in_contact] = calculate_projections(pos, k);
 
   
   % Find the desired joint angles based on the given path
@@ -76,7 +85,7 @@ for k = 1:Ns-1
   proj_points(1,:) = get_point_on_path(pos(1,:));
   for i = 2:n
      proj_point = get_point_on_path(pos(i,:));
-     q_ref(i,k+1) = get_path_reference_angle2(pos(i-1,:), pos(i,:), proj_point, q(i,k),i);
+     q_ref(i,k+1) = get_path_reference_angle(pos(i-1,:), pos(i,:), proj_point, q(i,k),i);
      proj_points(i,:) = proj_point;
   end
 
@@ -85,12 +94,15 @@ for k = 1:Ns-1
   error(2:n,k+1)    = q_ref(2:n,k+1) - q(2:n,k+1); % No error in unactuated joints
   error_d(2:n,k+1)  = -q_d(2:n,k+1);
   
+  % Calculate energy of robot
+  energy(k) = calculate_energy(q_d(:,k), mid_pos, last_mid_pos, h);
+  
   % Visualize robot
   x0 = q(n+1,k);
   y0 = q(n+2,k);
   visualize(pos, x0, y0, proj_points, t(k));
 end
 
-%plot_robot_data(q, q_d, q_dd, q_ref, head_pos, tau, error, t);
+%plot_robot_data(q, q_d, q_dd, q_ref, head_pos, tau, error, energy, momentum, t);
 
 
